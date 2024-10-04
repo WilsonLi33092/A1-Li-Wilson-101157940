@@ -10,6 +10,7 @@ public class Main {
         Main game = new Main();
         game.intializeAdventureDeck();
         game.intializeEventDeck();
+        game.dealPlayersHands();
     }
     class Card {
         String type;
@@ -209,6 +210,28 @@ public class Main {
         return eventDeck.size();
     }
     public void dealPlayersHands(){
+        Random dealCard = new Random();
+        int numRandoms = 48;
+        for(int i =0; i< numRandoms; i++) {
+            int randIndex = dealCard.nextInt(adventureDeck.size());
+            Card randCard = adventureDeck.get(randIndex);
+            adventureDeck.remove(randIndex);
+            if( (i % 4) == 0){
+                player1Hand.add(randCard);
+            }
+            else if ((i % 4) == 1) {
+                player2Hand.add(randCard);
+            }
+            else if ((i % 4) == 2) {
+                player3Hand.add(randCard);
+            }
+            else if((i % 4) == 3) {
+                player4Hand.add(randCard);
+            }
+            else {
+
+            }
+        }
 
     }
 
