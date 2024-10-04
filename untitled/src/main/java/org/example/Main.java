@@ -1,6 +1,7 @@
 package org.example;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
@@ -51,6 +52,10 @@ public class Main {
     }
     ArrayList<Card> adventureDeck = new ArrayList<Card>();
     ArrayList<Object> eventDeck = new ArrayList<Object>();
+    ArrayList<Card> player1Hand = new ArrayList<Card>();
+    ArrayList<Card> player2Hand = new ArrayList<Card>();
+    ArrayList<Card> player3Hand = new ArrayList<Card>();
+    ArrayList<Card> player4Hand = new ArrayList<Card>();
     public void intializeAdventureDeck() {
         adventureDeck = new ArrayList<Card>();
 
@@ -203,4 +208,8 @@ public class Main {
     public int getEventDeckSize() {
         return eventDeck.size();
     }
+    public void dealPlayersHands(){
+
+    }
+
 }
