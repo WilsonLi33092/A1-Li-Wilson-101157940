@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 class Player {
     ArrayList<Card> hand;
-    int shields = 0;
+    int shields = -1;
     public void setHand(ArrayList<Card> newHand) {
         hand = newHand;
     }

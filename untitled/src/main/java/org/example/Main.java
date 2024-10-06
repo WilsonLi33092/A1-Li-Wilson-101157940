@@ -19,12 +19,19 @@ public class Main {
         playerTwo.setHand(deck.player2Hand);
         playerThree.setHand(deck.player3Hand);
         playerFour.setHand(deck.player4Hand);
+        playerOne.setShields(-1);
+        playerTwo.setShields(-1);
+        playerThree.setShields(-1);
+        playerFour.setShields(-1);
+
+        System.out.println(playerOne.getShields());
         Boolean winner = false;
         int turnCounter = 0;
         while (winner == false) {
             if(turnCounter % 4 == 0) {
                 System.out.println("Player 1 Hand: " + playerOne.getHand());
                 System.out.println("It is currently your turn Player 1");
+                break;
             }
             else if(turnCounter % 4 == 1) {
                 System.out.println("Player 2 Hand: " + playerTwo.getHand());
