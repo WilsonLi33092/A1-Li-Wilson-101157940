@@ -12,6 +12,7 @@ public class Main {
         game.intializeEventDeck();
         game.dealPlayersHands();
     }
+    private MessagePrinter printer;
     class Card {
         String type;
         int value;
@@ -225,14 +226,14 @@ public class Main {
             else if ((i % 4) == 2) {
                 player3Hand.add(randCard);
             }
-            else if((i % 4) == 3) {
-                player4Hand.add(randCard);
-            }
             else {
-
+                player4Hand.add(randCard);
             }
         }
 
+    }
+    public String drawEventCard() {
+        return "";
     }
 
 }
