@@ -22,9 +22,9 @@ class RESP_3_Test_1 {
         @Test
         public void testEventDisplay() {
             MessagePrinter printer = new MessagePrinter();
-            Main game = new Main();
-            game.intializeEventDeck();
-            printer.printMessage(game.drawEventCard());
+            Decks deck = new Decks();
+            deck.intializeEventDeck();
+            printer.printMessage(deck.drawEventCard());
 
             String output = outputStreamCap.toString().trim();
             List<String> validOutputs = Arrays.asList("Quest 2", "Quest 3", "Quest 4", "Quest 5", "Plague", "Queen's favor", "Prosperity");
@@ -37,12 +37,12 @@ class RESP_3_Test_1 {
 
     @Test
     void testEventDraw() {
-        Main game = new Main();
-        game.intializeEventDeck();
-        game.intializeAdventureDeck();
-        game.dealPlayersHands();
-        game.drawEventCard();
-        int deckSize = game.getEventDeckSize();
+        Decks deck = new Decks();
+        deck.intializeEventDeck();
+        deck.intializeAdventureDeck();
+        deck.dealPlayersHands();
+        deck.drawEventCard();
+        int deckSize = deck.getEventDeckSize();
         assertEquals(16, deckSize);
 
     }
