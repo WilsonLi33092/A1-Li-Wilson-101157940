@@ -23,6 +23,7 @@ class RESP_3_Test_1 {
         public void testEventDisplay() {
             MessagePrinter printer = new MessagePrinter();
             Main game = new Main();
+            game.intializeEventDeck();
             printer.printMessage(game.drawEventCard());
 
             String output = outputStreamCap.toString().trim();

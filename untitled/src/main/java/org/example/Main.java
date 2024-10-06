@@ -11,6 +11,8 @@ public class Main {
         game.intializeAdventureDeck();
         game.intializeEventDeck();
         game.dealPlayersHands();
+        MessagePrinter printer = new MessagePrinter();
+        printer.printMessage(game.drawEventCard());
     }
     private MessagePrinter printer;
     class Card {
@@ -233,7 +235,11 @@ public class Main {
 
     }
     public String drawEventCard() {
-        return "";
+        Random dealEventCard = new Random();
+        int randInx = dealEventCard.nextInt(eventDeck.size());
+        Object randCard = eventDeck.get(randInx);
+        eventDeck.remove(randInx);
+        return randCard.toString();
     }
 
 }
