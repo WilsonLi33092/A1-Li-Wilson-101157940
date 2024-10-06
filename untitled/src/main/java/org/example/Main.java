@@ -1,6 +1,8 @@
 package org.example;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Random;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
@@ -8,6 +10,7 @@ import java.util.Random;
 public class Main {
     public static void main(String[] args) {
         Decks deck = new Decks();
+        EventCard event = new EventCard();
         deck.intializeAdventureDeck();
         deck.intializeEventDeck();
         deck.dealPlayersHands();
@@ -23,8 +26,20 @@ public class Main {
         int turnCounter = 0;
         while (winner == false) {
             if(turnCounter % 4 == 0) {
+                deck.setCurrentPlayerTurn(1);
+                playerOne.getHand().sort((c1, c2) -> c1.sortValue - c2.sortValue);
                 System.out.println("Player 1 Hand: " + playerOne.getHand());
                 System.out.println("It is currently your turn Player 1");
+                String placeholder = deck.drawEventCard();
+                while(placeholder != "Plague") {
+                    placeholder = deck.drawEventCard();
+                }
+                event.drawPlagueCard(playerOne.getHand());
+                playerOne.getHand().sort((c1, c2) -> c1.sortValue - c2.sortValue);
+                System.out.println("This is your hand after the plague card");
+                System.out.println("Player 1 Hand: " + playerOne.getHand());
+
+                break;
             }
             else if(turnCounter % 4 == 1) {
                 System.out.println("Player 2 Hand: " + playerTwo.getHand());
