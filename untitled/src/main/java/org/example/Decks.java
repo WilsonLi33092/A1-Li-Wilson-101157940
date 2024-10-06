@@ -196,7 +196,4 @@ public class Decks {
     public int getCurrentPlayerTurn() {
         return currentPlayerTurn;
     }
-    public void setCurrentPlayerTurn(int playerTurn) {
-        currentPlayerTurn = playerTurn;
-    }
 }
