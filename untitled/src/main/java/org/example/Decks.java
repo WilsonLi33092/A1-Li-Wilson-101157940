@@ -10,6 +10,7 @@ public class Decks {
     ArrayList<Card> player2Hand = new ArrayList<Card>();
     ArrayList<Card> player3Hand = new ArrayList<Card>();
     ArrayList<Card> player4Hand = new ArrayList<Card>();
+    int currentPlayerTurn = 1;
 
     public void intializeAdventureDeck() {
         adventureDeck = new ArrayList<Card>();
@@ -191,5 +192,8 @@ public class Decks {
         Object randCard = eventDeck.get(randInx);
         eventDeck.remove(randInx);
         return randCard.toString();
+    }
+    public int getCurrentPlayerTurn() {
+        return currentPlayerTurn;
     }
 }
