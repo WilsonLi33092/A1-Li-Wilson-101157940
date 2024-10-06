@@ -21,6 +21,7 @@ public class Main {
         playerFour.setHand(deck.player4Hand);
         Boolean winner = false;
         int turnCounter = 0;
+        int currentPlayer = 0;
         while (winner == false) {
             if(turnCounter % 4 == 0) {
                 System.out.println("Player 1 Hand: " + playerOne.getHand());
