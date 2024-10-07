@@ -12,4 +12,7 @@ class QuestCard {
     public String toString(){
         return type + " " + value;
     }
+    public int questCardDrawn(int currentPlayerTurn) {
+        return 0;
+    }
 }
