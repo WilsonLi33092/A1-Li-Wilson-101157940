@@ -1,5 +1,7 @@
 package org.example;
 
+import java.util.List;
+
 class QuestCard {
     String type;
     int value;
@@ -11,5 +13,8 @@ class QuestCard {
     }
     public String toString(){
         return type + " " + value;
+    }
+    public int questCardDrawn(int currentPlayerTurn, List<String> playerDecisions){
+        return 0;
     }
 }
