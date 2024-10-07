@@ -18,7 +18,7 @@ class Player {
         return shields;
     }
     public int calculateTrimHand(ArrayList<Card> playerHand) {
-            return 0;
+            return playerHand.size()-12;
     }
 
 }
