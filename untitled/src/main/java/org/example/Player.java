@@ -17,5 +17,8 @@ class Player {
     public int getShields() {
         return shields;
     }
+    public int calculateTrimHand(ArrayList<Card> playerHand) {
+            return 0;
+    }
 
 }
