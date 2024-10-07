@@ -22,4 +22,7 @@ public class EventCard {
         }
         return playerHand;
     }
+    public void drawProsperity(ArrayList<Card> playerOneHand, ArrayList<Card> playerTwoHand, ArrayList<Card> playerThreeHand, ArrayList<Card> playerFourHand, ArrayList<Card> adventureDeck) {
+
+    }
 }
