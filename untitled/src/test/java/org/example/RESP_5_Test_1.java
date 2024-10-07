@@ -23,6 +23,8 @@ class RESP_5_Test_1 {
       playerFour.setHand(deck.player4Hand);
       int currentHandSize = 0;
       int revisedHandSize = 0;
+      int currentAdventureDeckSize = deck.getAdventureDeckSize();
+      int revisedAdventureDeckSize = 0;
       if(deck.getCurrentPlayerTurn() == 1) {
           currentHandSize = playerOne.getHand().size();
           playerOne.setHand(event.drawQueensFavorCard(playerOne.getHand(), deck.adventureDeck));
@@ -43,7 +45,9 @@ class RESP_5_Test_1 {
           playerFour.setHand(event.drawQueensFavorCard(playerFour.getHand(), deck.adventureDeck));
           revisedHandSize = playerFour.getHand().size();
       }
+      revisedAdventureDeckSize = deck.getAdventureDeckSize();
       assertEquals((currentHandSize + 2), revisedHandSize);
+      assertEquals((currentAdventureDeckSize-2), revisedAdventureDeckSize);
 
     }
 }
