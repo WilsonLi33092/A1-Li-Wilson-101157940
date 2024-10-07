@@ -21,5 +21,6 @@ class Player {
             return playerHand.size()-12;
     }
     public void deleteCard(int position) {
+        hand.remove(position);
     }
 }
