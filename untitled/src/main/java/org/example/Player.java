@@ -20,7 +20,5 @@ class Player {
     public int calculateTrimHand(ArrayList<Card> playerHand) {
             return playerHand.size()-12;
     }
-    public void deleteCard(int position) {
-    }
 
 }
