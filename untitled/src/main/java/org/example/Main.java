@@ -8,6 +8,7 @@ import java.util.Random;
 public class Main {
     public static void main(String[] args) {
         Decks deck = new Decks();
+        EventCard event = new EventCard();
         deck.intializeAdventureDeck();
         deck.intializeEventDeck();
         deck.dealPlayersHands();
@@ -25,6 +26,7 @@ public class Main {
             if(turnCounter % 4 == 0) {
                 System.out.println("Player 1 Hand: " + playerOne.getHand());
                 System.out.println("It is currently your turn Player 1");
+
             }
             else if(turnCounter % 4 == 1) {
                 System.out.println("Player 2 Hand: " + playerTwo.getHand());
