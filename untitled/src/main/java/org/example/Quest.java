@@ -5,13 +5,19 @@ import java.util.List;
 
 public class Quest {
     List<Stage> stages;
-    public Quest(List<Stage> newStages){
+    Player sponsor;
+    List<Player> participants;
+    List<Player> withdrawnParticipants;
+    public Quest(List<Stage> newStages, Player newSponsor, List<Player> newParticipants){
         stages = newStages;
+        sponsor = newSponsor;
+        participants = new ArrayList<>(newParticipants);
+        withdrawnParticipants = new ArrayList<>();
     }
     public Quest addStage(Stage newStage ){
         List<Stage> newStages = new ArrayList<>(stages);
         newStages.add(newStage);
-        return new Quest(newStages);
+        return new Quest(newStages, sponsor, participants);
     }
     public List<Stage> getStages() {
         return stages;

@@ -9,6 +9,10 @@ import static org.junit.jupiter.api.Assertions.*;
 class RESP_10_Test_1 {
     @Test
     public void testValidQuest() {
+        Player sponsor = new Player();
+        Player player2 = new Player();
+        Player player3 = new Player();
+        Player player4 = new Player();
         QuestCard questCard = new QuestCard();
         Card foe1 = new Card();
         Card weapon1 = new Card();
@@ -24,6 +28,7 @@ class RESP_10_Test_1 {
         weapon2.setValue(20);
         questCard.setType("Quest");
         questCard.setValue(2);
+        List<Player> participants = List.of(player2, player3, player4);
 
 
         Stage stage1 = new Stage(List.of(foe1, weapon1));
@@ -32,10 +37,9 @@ class RESP_10_Test_1 {
         Stage stage2 = new Stage(List.of(foe2, weapon2));
         assertEquals(35, stage2.getTotalValue(), "Stage 2 value should be 35.");
 
-        // Building the quest
-        Quest quest = new Quest(List.of());  // Empty quest to start
-        quest = quest.addStage(stage1);  // Add stage 1
-        quest = quest.addStage(stage2);  // Add stage 2
+        Quest quest = new Quest(List.of(), sponsor, participants);
+        quest = quest.addStage(stage1);
+        quest = quest.addStage(stage2);
 
         assertEquals(2, quest.getStages().size(), "The quest should have 2 stages.");
     }
