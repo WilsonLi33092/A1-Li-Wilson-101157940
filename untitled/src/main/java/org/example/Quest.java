@@ -1,5 +1,6 @@
 package org.example;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Quest {
@@ -8,9 +9,11 @@ public class Quest {
         stages = newStages;
     }
     public Quest addStage(Stage newStage ){
-        return null;
+        List<Stage> newStages = new ArrayList<>(stages);
+        newStages.add(newStage);
+        return new Quest(newStages);
     }
     public List<Stage> getStages() {
-        return null;
+        return stages;
     }
 }

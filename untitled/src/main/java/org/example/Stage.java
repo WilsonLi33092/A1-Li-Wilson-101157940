@@ -8,10 +8,14 @@ public class Stage {
         cards = newCards;
     }
     public int getTotalValue() {
-        return 0;
+        int totalValue = 0;
+        for (int i=0;i<cards.size();i++){
+            totalValue+=cards.get(i).getCardValue();
+        }
+        return totalValue;
     }
     public List<Card> getCards() {
-        return null;
+        return cards;
     }
 
 }
