@@ -100,6 +100,7 @@ public class Decks {
         for (int i =0; i< 12;i++){
             Card card = new Card();
             card.type = "Horse";
+            card.value = 10;
             card.sortValue = 13;
             adventureDeck.add(card);
         }
