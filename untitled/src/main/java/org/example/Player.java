@@ -28,6 +28,8 @@ class Player {
         numPlayer = newNumPlayer;
     }
     public Card trimHand(ArrayList<Card> playerHand, int removeCard) {
-        return null;
+        Card removedCard = playerHand.get(removeCard -1);
+        System.out.println("You have chosen card " + removedCard.toString() + " to be removed");
+        return removedCard;
     }
 }

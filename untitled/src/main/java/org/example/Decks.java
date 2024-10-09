@@ -198,6 +198,8 @@ public class Decks {
         return currentPlayerTurn;
     }
     public Card drawCard() {
-        return null;
+        Random drawCard = new Random();
+        int randInx = drawCard.nextInt(adventureDeck.size());
+        return adventureDeck.get(randInx);
     }
 }
