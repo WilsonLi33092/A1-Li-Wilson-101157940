@@ -27,4 +27,7 @@ class Player {
     public void setNumPlayer(int newNumPlayer) {
         numPlayer = newNumPlayer;
     }
+    public Card trimHand(ArrayList<Card> playerHand, int removeCard) {
+        return null;
+    }
 }

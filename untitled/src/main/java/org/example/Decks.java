@@ -197,4 +197,7 @@ public class Decks {
     public int getCurrentPlayerTurn() {
         return currentPlayerTurn;
     }
+    public Card drawCard() {
+        return null;
+    }
 }
