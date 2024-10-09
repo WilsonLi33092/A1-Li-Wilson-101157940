@@ -22,4 +22,13 @@ public class Quest {
     public List<Stage> getStages() {
         return stages;
     }
+    public List<Player> getEligibleParticipants(int stageIndex) {
+        return null;
+    }
+    public void promptParticipation(int stageIndex, Player player, String action) {
+
+    }
+    public void withdraw(Player player) {
+
+    }
 }

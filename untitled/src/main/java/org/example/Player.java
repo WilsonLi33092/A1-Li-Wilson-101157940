@@ -5,6 +5,7 @@ import java.util.ArrayList;
 class Player {
     ArrayList<Card> hand;
     int shields = 0;
+    int numPlayer = 0;
     public void setHand(ArrayList<Card> newHand) {
         hand = newHand;
     }
@@ -22,5 +23,8 @@ class Player {
     }
     public void deleteCard(int position) {
         hand.remove(position);
+    }
+    public void setNumPlayer(int newNumPlayer) {
+        numPlayer = newNumPlayer;
     }
 }
