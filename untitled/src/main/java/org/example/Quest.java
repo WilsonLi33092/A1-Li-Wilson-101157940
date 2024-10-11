@@ -43,6 +43,9 @@ public class Quest {
         if(!withdrawnParticipants.contains(player)) {
             withdrawnParticipants.add(player);
         }
-
     }
+    public boolean isQuestEnded() {
+        return false;
+    }
+
 }
