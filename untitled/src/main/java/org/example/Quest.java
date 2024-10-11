@@ -8,6 +8,7 @@ public class Quest {
     Player sponsor;
     List<Player> participants;
     List<Player> withdrawnParticipants;
+    boolean questEnded;
     public Quest(List<Stage> newStages, Player newSponsor, List<Player> newParticipants){
         stages = newStages;
         sponsor = newSponsor;
@@ -38,6 +39,9 @@ public class Quest {
         } else {
             System.out.println(player.numPlayer + " is continuing to tackle the current stage.");
         }
+        if(withdrawnParticipants.size() == 3) {
+            questEnded = true;
+        }
     }
     public void withdraw(Player player) {
         if(!withdrawnParticipants.contains(player)) {
@@ -45,7 +49,7 @@ public class Quest {
         }
     }
     public boolean isQuestEnded() {
-        return false;
+        return questEnded;
     }
 
 }
