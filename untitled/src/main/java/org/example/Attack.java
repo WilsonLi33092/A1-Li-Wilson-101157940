@@ -11,21 +11,26 @@ public class Attack {
         attackCards = new ArrayList<>();
     }
     public void addCardToAttack(Card card){
-
+        attackCards.add(card);
     }
     public List<Card> getAttackCards() {
         return attackCards;
     }
     public boolean containsCard(Card card) {
-        return false;
+        return attackCards.contains(card);
     }
     public int getTotalValue() {
-       return 0;
+       int totalValue = 0;
+       for(Card card : attackCards) {
+           totalValue += card.getCardValue();
+       }
+       return totalValue;
     }
+
     public Player getPlayer() {
-        return null;
+        return player;
     }
     public void clearAttack() {
-
+        attackCards.clear();
     }
 }
