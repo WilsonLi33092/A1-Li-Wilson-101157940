@@ -98,7 +98,19 @@ public class Quest {
         }
     }
     public void resolveStage(Stage stage, List<Attack> attacks, List<Player> remainingPlayers) {
+        for(Attack attack : attacks) {
+            int attackValue = attack.getTotalValue();
+            Player player = attack.getPlayer();
+            if(attackValue < stage.getTotalValue()) {
+                remainingPlayers.remove(player);
+            }
+        }
 
+        if(stages.getLast().equals(stage)) {
+            for(Player winner : remainingPlayers) {
+                winner.shields += stages.size();
+            }
+        }
     }
 
 }
