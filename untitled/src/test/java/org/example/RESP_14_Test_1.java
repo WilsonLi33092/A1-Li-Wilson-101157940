@@ -56,11 +56,17 @@ class RESP_14_Test_1 {
         String quit = "quit";
         boolean result = quest.promptPlayerForAttack(player1, chooseCardOne, attack);
         assertTrue(result);
+        player1.getHand().set(0, weapon1);
+        player1.getHand().set(1,weapon2);
+        player1.getHand().set(2,weapon2);
         List<Card> attackCards = attack.getAttackCards();
         assertEquals(1, attackCards.size());
         assertEquals("Horse", attackCards.get(0).getCardType());
         result = quest.promptPlayerForAttack(player1, chooseCardTwo, attack);
         assertTrue(result);
+        player1.getHand().set(0, weapon1);
+        player1.getHand().set(1,weapon2);
+        player1.getHand().set(2,weapon2);
         attackCards = attack.getAttackCards();
         assertEquals(2, attackCards.size());
         assertEquals("Lance", attackCards.get(1).getCardType());

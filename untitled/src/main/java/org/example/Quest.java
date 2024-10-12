@@ -68,6 +68,7 @@ public class Quest {
                 Card selectedCard = player.getHand().get(index);
                 if (isValidWeaponCard(selectedCard, attack)) {
                     attack.addCardToAttack(selectedCard);
+                    player.getHand().remove(selectedCard);
                     System.out.println("Card " + selectedCard.getCardType() + " with a value of " + selectedCard.getCardValue() + " added to the attack");
                 } else {
                     System.out.println("Invalid card selection. Repeated weapon card");
