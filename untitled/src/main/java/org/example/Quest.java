@@ -1,6 +1,7 @@
 package org.example;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Quest {
@@ -50,6 +51,15 @@ public class Quest {
     }
     public boolean isQuestEnded() {
         return questEnded;
+    }
+    public boolean promptPlayerForAttack(Player player, String action, Attack attack) {
+        return false;
+    }
+    public boolean isValidWeaponCard(Card newCard, Attack attack) {
+        return false;
+    }
+    public void displayAttackCards(Attack attack) {
+
     }
 
 }
