@@ -2,6 +2,7 @@ package org.example;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -33,15 +34,16 @@ class RESP_13_Test_1 {
         player2.setNumPlayer(3);
         player3.setNumPlayer(4);
         List<Player> participants = List.of(player1, player2, player3);
-        Quest quest = new Quest(List.of(), sponsor, participants);
+        ArrayList<Stage> stages = new ArrayList<>();
+        Stage stage1 = new Stage(List.of(foe1,weapon1));
+        stages.add(stage1);
+        Quest quest = new Quest(stages, sponsor, participants);
         Decks deck = new Decks();
         deck.intializeAdventureDeck();
         deck.dealPlayersHands();
         player1.setHand(deck.player2Hand);
         player2.setHand(deck.player3Hand);
         player3.setHand(deck.player4Hand);
-        Stage stage1 = new Stage(List.of(foe1, weapon1));
-        quest.addStage(stage1);
         quest.promptParticipation(1, player1, "withdraw");
         quest.promptParticipation(1, player2, "withdraw");
         quest.promptParticipation(1, player3, "withdraw");

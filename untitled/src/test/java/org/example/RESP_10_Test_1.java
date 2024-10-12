@@ -2,6 +2,9 @@ package org.example;
 
 import org.junit.jupiter.api.Test;
 
+import java.sql.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -30,14 +33,15 @@ class RESP_10_Test_1 {
         questCard.setValue(2);
         List<Player> participants = List.of(player2, player3, player4);
 
-
+        ArrayList<Stage> stages = new ArrayList<>();
         Stage stage1 = new Stage(List.of(foe1, weapon1));
         assertEquals(20, stage1.getTotalValue(), "Stage 1 value should be 20.");
 
         Stage stage2 = new Stage(List.of(foe2, weapon2));
         assertEquals(35, stage2.getTotalValue(), "Stage 2 value should be 35.");
-
-        Quest quest = new Quest(List.of(), sponsor, participants);
+        stages.add(stage1);
+        stages.add(stage2);
+        Quest quest = new Quest(stages, sponsor, participants);
         quest = quest.addStage(stage1);
         quest = quest.addStage(stage2);
 

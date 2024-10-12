@@ -5,21 +5,20 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Quest {
-    List<Stage> stages;
+    ArrayList<Stage> stages;
     Player sponsor;
     List<Player> participants;
     List<Player> withdrawnParticipants;
     boolean questEnded;
-    public Quest(List<Stage> newStages, Player newSponsor, List<Player> newParticipants){
+    public Quest(ArrayList<Stage> newStages, Player newSponsor, List<Player> newParticipants){
         stages = newStages;
         sponsor = newSponsor;
         participants = new ArrayList<>(newParticipants);
         withdrawnParticipants = new ArrayList<>();
     }
     public Quest addStage(Stage newStage ){
-        List<Stage> newStages = new ArrayList<>(stages);
-        newStages.add(newStage);
-        return new Quest(newStages, sponsor, participants);
+        stages.add(newStage);
+        return new Quest(stages, sponsor, participants);
     }
     public List<Stage> getStages() {
         return stages;
@@ -98,5 +97,6 @@ public class Quest {
             System.out.println(card.getCardType() + " with a value of " + card.getCardValue() + " is the attack card");
         }
     }
+
 
 }

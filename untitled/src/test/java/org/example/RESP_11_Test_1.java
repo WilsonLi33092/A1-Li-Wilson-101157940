@@ -2,6 +2,7 @@ package org.example;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -31,12 +32,14 @@ class RESP_11_Test_1 {
         weapon2.setValue(20);
         questCard.setType("Quest");
         questCard.setValue(2);
-
-        List<Player> participants = List.of(player1, player2, player3);
-        Quest quest = new Quest(List.of(), sponsor, participants);
-
         Stage stage1 = new Stage(List.of(foe1, weapon1));
-        quest.addStage(stage1);
+        Stage stage2 = new Stage(List.of(foe2, weapon2));
+        ArrayList<Stage> stages = new ArrayList<>();
+        stages.add(stage1);
+        stages.add(stage2);
+        List<Player> participants = List.of(player1, player2, player3);
+        Quest quest = new Quest(stages, sponsor, participants);
+
 
         quest.promptParticipation(1, player1, "withdraw");
         quest.promptParticipation(1, player2, "continue");
@@ -47,8 +50,6 @@ class RESP_11_Test_1 {
         assertTrue(eligibleForStage2.contains(player2));
         assertTrue(eligibleForStage2.contains(player3));
 
-        Stage stage2 = new Stage(List.of(foe2, weapon2));
-        quest.addStage(stage2);
 
         quest.promptParticipation(2, player2, "withdraw");
         quest.promptParticipation(2, player3, "continue");
