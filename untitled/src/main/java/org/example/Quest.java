@@ -97,6 +97,8 @@ public class Quest {
             System.out.println(card.getCardType() + " with a value of " + card.getCardValue() + " is the attack card");
         }
     }
+    public void resolveStage(Stage stage, List<Attack> attacks, List<Player> remainingPlayers) {
 
+    }
 
 }
