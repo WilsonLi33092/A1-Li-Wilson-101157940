@@ -34,6 +34,19 @@ class Player {
         return removedCard;
     }
     public List<Player> checkForWinner(Player playerOne, Player playerTwo, Player playerThree, Player playerFour) {
-        return null;
+        List<Player> winners = new ArrayList<>();
+        if(playerOne.shields >= 7) {
+            winners.add(playerOne);
+        }
+        if(playerTwo.shields >= 7) {
+            winners.add(playerTwo);
+        }
+        if(playerThree.shields >= 7) {
+            winners.add(playerThree);
+        }
+        if(playerFour.shields >= 7) {
+            winners.add(playerFour);
+        }
+        return winners;
     }
 }
