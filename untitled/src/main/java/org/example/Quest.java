@@ -101,11 +101,17 @@ public class Quest {
         for(Attack attack : attacks) {
             int attackValue = attack.getTotalValue();
             Player player = attack.getPlayer();
+            for(int i=0;i<remainingPlayers.size();i++) {
+                if(remainingPlayers.get(i).equals(player)){
+                    for(Card card : attack.attackCards) {
+                        remainingPlayers.get(i).getHand().remove(card);
+                    }
+                }
+            }
             if(attackValue < stage.getTotalValue()) {
                 remainingPlayers.remove(player);
             }
         }
-
         if(stages.getLast().equals(stage)) {
             for(Player winner : remainingPlayers) {
                 winner.shields += stages.size();
