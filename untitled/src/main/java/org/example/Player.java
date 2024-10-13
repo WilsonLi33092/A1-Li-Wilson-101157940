@@ -1,6 +1,7 @@
 package org.example;
 
 import java.util.ArrayList;
+import java.util.List;
 
 class Player {
     ArrayList<Card> hand;
@@ -31,5 +32,8 @@ class Player {
         Card removedCard = playerHand.get(removeCard -1);
         System.out.println("You have chosen card " + removedCard.toString() + " to be removed");
         return removedCard;
+    }
+    public List<Player> checkForWinner(Player playerOne, Player playerTwo, Player playerThree, Player playerFour) {
+        return null;
     }
 }
