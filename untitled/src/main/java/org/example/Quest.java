@@ -1,8 +1,6 @@
 package org.example;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class Quest {
     ArrayList<Stage> stages;
@@ -102,27 +100,25 @@ public class Quest {
             System.out.println(card.getCardType() + " with a value of " + card.getCardValue() + " is the attack card");
         }
     }
-    public void resolveStage(Stage stage, List<Attack> attacks, List<Player> remainingPlayers) {
+    public List<Player> resolveStage(Stage stage, List<Attack> attacks, List<Player> remainingPlayers) {
+        List<Player> eliminatedPlayers = new ArrayList<>();
+        List<Player> newRemainingPlayers = new ArrayList<>(remainingPlayers);
         for(Attack attack : attacks) {
             int attackValue = attack.getTotalValue();
             Player player = attack.getPlayer();
-            for(int i=0;i<remainingPlayers.size();i++) {
-                if(remainingPlayers.get(i).equals(player)){
-                    for(Card card : attack.attackCards) {
-                        remainingPlayers.get(i).getHand().remove(card);
-                    }
-                }
-            }
+
             if(attackValue <= stage.getTotalValue()) {
-                remainingPlayers.remove(player);
+                eliminatedPlayers.add(player);
                 participants.remove(player);
             }
         }
+        newRemainingPlayers.removeAll(eliminatedPlayers);
         if(stages.getLast().equals(stage)) {
-            for(Player winner : remainingPlayers) {
+            for(Player winner : newRemainingPlayers) {
                 winner.shields += stages.size();
             }
         }
+        return newRemainingPlayers;
     }
 
 }
