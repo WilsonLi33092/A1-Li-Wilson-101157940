@@ -188,6 +188,10 @@ public class Decks {
 
     }
     public String drawEventCard() {
+        if(eventDeck.size() == 0) {
+            System.out.println("You have ran out of event cards to play from");
+            return null;
+        }
         Random dealEventCard = new Random();
         int randInx = dealEventCard.nextInt(eventDeck.size());
         Object randCard = eventDeck.get(randInx);

@@ -69,8 +69,13 @@ public class Quest {
                     attack.addCardToAttack(selectedCard);
                     player.getHand().remove(selectedCard);
                     System.out.println("Card " + selectedCard.getCardType() + " with a value of " + selectedCard.getCardValue() + " added to the attack");
-                } else {
-                    System.out.println("Invalid card selection. Repeated weapon card");
+                } else if(attack.containsCard(selectedCard)) {
+                    System.out.println("Invalid card selection. Chose repeated card");
+                    return false;
+
+                }
+                else {
+                    System.out.println("Invalid card selection. Chose foe card");
                     return false;
                 }
             } else {
@@ -108,8 +113,9 @@ public class Quest {
                     }
                 }
             }
-            if(attackValue < stage.getTotalValue()) {
+            if(attackValue <= stage.getTotalValue()) {
                 remainingPlayers.remove(player);
+                participants.remove(player);
             }
         }
         if(stages.getLast().equals(stage)) {
