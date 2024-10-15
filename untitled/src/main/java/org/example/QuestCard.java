@@ -1,5 +1,8 @@
 package org.example;
 
+import java.io.FileDescriptor;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 import java.util.List;
 
 class QuestCard {
@@ -23,9 +26,11 @@ class QuestCard {
             String player = Integer.toString(currentPlayerTurn);
             String option = playerDecisions.get(decisionIndex).toUpperCase().trim();
             decisionIndex++;
+            System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
 
             if (option.equals("Y")) {
                 questDeclined = false;
+
                 System.out.println("Player " + player + " will sponsor the quest.");
                 return currentPlayerTurn;
             } else if (option.equals("N")) {

@@ -42,8 +42,6 @@ class RESP_10_Test_1 {
         stages.add(stage1);
         stages.add(stage2);
         Quest quest = new Quest(stages, sponsor, participants);
-        quest = quest.addStage(stage1);
-        quest = quest.addStage(stage2);
 
         assertEquals(2, quest.getStages().size(), "The quest should have 2 stages.");
     }

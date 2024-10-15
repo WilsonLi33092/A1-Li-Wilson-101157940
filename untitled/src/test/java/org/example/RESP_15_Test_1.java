@@ -61,10 +61,10 @@ class RESP_15_Test_1 {
         attack2.addCardToAttack(weapon3);
         Attack attack3 = new Attack(player3);
         attack3.addCardToAttack(weapon1);
-        quest.resolveStage(stage1, List.of(attack1, attack2,attack3), remainingPlayers);
-        assertTrue(remainingPlayers.contains(player1));
-        assertTrue(remainingPlayers.contains(player2));
-        assertFalse(remainingPlayers.contains(player3));
+        List<Player> newRemainingPlayers = quest.resolveStage(stage1, List.of(attack1, attack2,attack3), remainingPlayers);
+        assertTrue(newRemainingPlayers.contains(player1));
+        assertTrue(newRemainingPlayers.contains(player2));
+        assertFalse(newRemainingPlayers.contains(player3));
         attack1.clearAttack();
         attack2.clearAttack();
         attack1.addCardToAttack(weapon1);
@@ -72,9 +72,9 @@ class RESP_15_Test_1 {
         attack1.addCardToAttack(weapon3);
         attack2.addCardToAttack(weapon1);
         attack2.addCardToAttack(weapon3);
-        quest.resolveStage(stage2, List.of(attack1,attack2), remainingPlayers);
-        assertTrue(remainingPlayers.contains(player1));
-        assertFalse(remainingPlayers.contains(player2));
+        newRemainingPlayers = quest.resolveStage(stage2, List.of(attack1,attack2), remainingPlayers);
+        assertTrue(newRemainingPlayers.contains(player1));
+        assertFalse(newRemainingPlayers.contains(player2));
         assertEquals(2, (player1.getShields()));
 
     }
