@@ -23,10 +23,6 @@ public class Main {
         playerTwo.setNumPlayer(2);
         playerThree.setNumPlayer(3);
         playerFour.setNumPlayer(4);
-        playerOne.setShields(6);
-        playerTwo.setShields(6);
-        playerThree.setShields(6);
-        playerFour.setShields(6);
         String moveOn;
         List<Player> playerList = new ArrayList<>(List.of(playerOne,playerTwo,playerThree,playerFour));
         List<Player> allPlayers = playerList;
