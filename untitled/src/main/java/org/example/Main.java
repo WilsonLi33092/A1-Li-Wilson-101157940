@@ -118,24 +118,40 @@ public class Main {
                         }
                         ArrayList<Stage> stagesForQuest = new ArrayList<>();
                         Set<Integer> usedCardIndices = new HashSet<>();
+                        int previousStageValue = 0;
+                        ArrayList<Integer> sponsorQuestIndexs = new ArrayList<>();
                         for(int i=0;i<stageNumber;i++){
-                            ArrayList<Integer> sponsorQuestIndexs = new ArrayList<>();
+                            //ArrayList<Integer> sponsorQuestIndexs = new ArrayList<>();
                             System.out.println("This is your current hand");
                             System.out.println("Hello player " + sponsorPlayer.numPlayer);
                             System.out.println(sponsorPlayer.getHand());
                             System.out.println("Please choose the indexs of the cards you would like to sponsor for stage " + (i+1));
                             System.out.println("Enter 'quit' when you are done choosing");
+                            sponsorQuestIndexs.clear();
                             String sponsorIndex = scanner.nextLine();
                             while(!sponsorIndex.equals("quit")){
                                 int cardChosenIndex = Integer.parseInt(sponsorIndex);
                                 if(usedCardIndices.contains(cardChosenIndex)) {
                                     System.out.println("Card at index " + cardChosenIndex + " has already been used. Choose a different card");
-                                } else {
+                                }
+                                else {
                                     sponsorQuestIndexs.add(cardChosenIndex);
-                                    usedCardIndices.add(cardChosenIndex);
                                 }
                                 System.out.println("Please choose another index or type 'quit'");
                                 sponsorIndex = scanner.nextLine();
+                            }
+                            int currentStageValue = 0;
+                            for(Integer checkStageValue : sponsorQuestIndexs) {
+                                currentStageValue += sponsorPlayer.getHand().get(checkStageValue).value;
+                            }
+                            if(currentStageValue <= previousStageValue) {
+                                System.out.println("Please redo your stage as your stage that you have chosen was not greater than the previous stage");
+                                i--;
+                                continue;
+                            }
+                            else {
+                                previousStageValue = currentStageValue;
+                                usedCardIndices.addAll(sponsorQuestIndexs);
                             }
                             List<Card> stageList = new ArrayList<>();
                             for (Integer sponsorQuestIndex : sponsorQuestIndexs) {
@@ -144,6 +160,7 @@ public class Main {
                             for (Card card : stageList) {
                                 sponsorCardList.add(card);
                             }
+
                             Stage stage = new Stage(stageList);
                             stagesForQuest.add(stage);
                         }
@@ -228,7 +245,7 @@ public class Main {
                                 playerAttacks.add(newAttack);
                             }
                             remainingPlayer = quest.getEligibleParticipants(k);
-                            quest.resolveStage(quest.getStages().get(k),playerAttacks,remainingPlayer);
+                            remainingPlayer = quest.resolveStage(quest.getStages().get(k),playerAttacks,remainingPlayer);
                             System.out.println("For stage " + (k+1) + " the following players have moved on");
                             for(Player validPlayer : remainingPlayer) {
                                 System.out.println("Player " + validPlayer.numPlayer);

@@ -107,7 +107,7 @@ public class Quest {
             int attackValue = attack.getTotalValue();
             Player player = attack.getPlayer();
 
-            if(attackValue <= stage.getTotalValue()) {
+            if(attackValue < stage.getTotalValue()) {
                 eliminatedPlayers.add(player);
                 participants.remove(player);
             }
