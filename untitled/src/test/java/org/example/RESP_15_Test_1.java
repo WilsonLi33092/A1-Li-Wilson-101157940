@@ -10,10 +10,10 @@ import static org.junit.jupiter.api.Assertions.*;
 class RESP_15_Test_1 {
     @Test
     public void testAttackOnStageLessThan() {
-        Player sponsor = new Player();
-        Player player1 = new Player();
-        Player player2 = new Player();
-        Player player3 = new Player();
+        Player sponsor = new Player(4);
+        Player player1 = new Player(1);
+        Player player2 = new Player(2);
+        Player player3 = new Player(3);
         QuestCard questCard = new QuestCard();
         Card foe1 = new Card();
         Card weapon1 = new Card();

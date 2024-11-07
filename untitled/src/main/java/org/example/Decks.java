@@ -165,6 +165,10 @@ public class Decks {
     public int getEventDeckSize() {
         return eventDeck.size();
     }
+    public ArrayList<Object> getEventDeck() {
+        return eventDeck;
+    }
+    public ArrayList<Card> getAdventureDeck() {return adventureDeck;}
     public void dealPlayersHands(){
         Random dealCard = new Random();
         int numRandoms = 48;
@@ -204,6 +208,17 @@ public class Decks {
     public Card drawCard() {
         Random drawCard = new Random();
         int randInx = drawCard.nextInt(adventureDeck.size());
-        return adventureDeck.get(randInx);
+        Card drawnCard = new Card();
+        drawnCard = adventureDeck.get(randInx);
+        adventureDeck.remove(randInx);
+        return drawnCard;
     }
+    public Card drawRiggedCard() {
+        Card drawnCard = new Card();
+        drawnCard = adventureDeck.get(0);
+        adventureDeck.remove(0);
+        return drawnCard;
+    }
+
+
 }

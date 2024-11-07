@@ -1,5 +1,7 @@
 package org.example;
 
+import io.cucumber.java.bs.A;
+
 import java.util.*;
 
 public class Quest {
@@ -7,9 +9,15 @@ public class Quest {
     Player sponsor;
     List<Player> participants;
     List<Player> withdrawnParticipants;
+    List<String> indices = new ArrayList<>();
     boolean questEnded;
     public Quest(ArrayList<Stage> newStages, Player newSponsor, List<Player> newParticipants){
-        stages = newStages;
+        if(newStages == null) {
+            stages = new ArrayList<>();
+        }
+        else{
+            stages = newStages;
+        }
         sponsor = newSponsor;
         participants = new ArrayList<>(newParticipants);
         withdrawnParticipants = new ArrayList<>();
@@ -17,6 +25,12 @@ public class Quest {
     public Quest addStage(Stage newStage ){
         stages.add(newStage);
         return new Quest(stages, sponsor, participants);
+    }
+    public List<String> getIndices(){
+        return indices;
+    }
+    public void setIndices(String something){
+        indices.add(something);
     }
     public List<Stage> getStages() {
         return stages;
@@ -35,7 +49,7 @@ public class Quest {
             withdraw(player);
             System.out.println(player.numPlayer + " has withdrawn from the quest.");
         } else {
-            System.out.println(player.numPlayer + " is continuing to tackle the current stage.");
+          //  System.out.println(player.numPlayer + " is continuing to tackle the current stage.");
         }
         if(withdrawnParticipants.size() == 3) {
             questEnded = true;
@@ -66,7 +80,7 @@ public class Quest {
                 if (isValidWeaponCard(selectedCard, attack)) {
                     attack.addCardToAttack(selectedCard);
                     player.getHand().remove(selectedCard);
-                    System.out.println("Card " + selectedCard.getCardType() + " with a value of " + selectedCard.getCardValue() + " added to the attack");
+                    //System.out.println("Card " + selectedCard.getCardType() + " with a value of " + selectedCard.getCardValue() + " added to the attack");
                 } else if(attack.containsCard(selectedCard)) {
                     System.out.println("Invalid card selection. Chose repeated card");
                     return false;
@@ -113,11 +127,11 @@ public class Quest {
             }
         }
         newRemainingPlayers.removeAll(eliminatedPlayers);
-        if(stages.getLast().equals(stage)) {
-            for(Player winner : newRemainingPlayers) {
-                winner.shields += stages.size();
-            }
-        }
+        //if(stages.getLast().equals(stage)) {
+        //    for(Player winner : newRemainingPlayers) {
+        //        winner.shields += stages.size();
+        //    }
+        //}
         return newRemainingPlayers;
     }
 

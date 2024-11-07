@@ -5,7 +5,7 @@ import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.util.List;
 
-class QuestCard {
+public class QuestCard {
     String type;
     int value;
     public void setType(String newType) {
@@ -31,7 +31,7 @@ class QuestCard {
             if (option.equals("Y")) {
                 questDeclined = false;
 
-                System.out.println("Player " + player + " will sponsor the quest.");
+                //System.out.println("Player " + player + " will sponsor the quest.");
                 return currentPlayerTurn;
             } else if (option.equals("N")) {
                 currentPlayerTurn++;

@@ -1,6 +1,6 @@
 package org.example;
 
-class Card {
+public class Card {
     String type;
     int value;
     int sortValue;

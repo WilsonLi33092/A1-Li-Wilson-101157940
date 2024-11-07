@@ -9,10 +9,10 @@ import static org.junit.jupiter.api.Assertions.*;
 class RESP_17_Test_1 {
     @Test
     public void checkWinners() {
-        Player player1 = new Player();
-        Player player2 = new Player();
-        Player player3 = new Player();
-        Player player4 = new Player();
+        Player player1 = new Player(1);
+        Player player2 = new Player(2);
+        Player player3 = new Player(3);
+        Player player4 = new Player(4);
         player1.setShields(5);
         player2.setShields(7);
         player3.setShields(6);

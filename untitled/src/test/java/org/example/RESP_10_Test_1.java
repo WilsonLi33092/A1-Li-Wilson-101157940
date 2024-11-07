@@ -12,10 +12,10 @@ import static org.junit.jupiter.api.Assertions.*;
 class RESP_10_Test_1 {
     @Test
     public void testValidQuest() {
-        Player sponsor = new Player();
-        Player player2 = new Player();
-        Player player3 = new Player();
-        Player player4 = new Player();
+        Player sponsor = new Player(1);
+        Player player2 = new Player(2);
+        Player player3 = new Player(3);
+        Player player4 = new Player(4);
         QuestCard questCard = new QuestCard();
         Card foe1 = new Card();
         Card weapon1 = new Card();

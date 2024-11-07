@@ -14,30 +14,30 @@ class RESP_4_Test_1 {
         deck.dealPlayersHands();
         deck.getCurrentPlayerTurn();
         deck.drawEventCard();
-        Player playerOne = new Player();
-        Player playerTwo = new Player();
-        Player playerThree = new Player();
-        Player playerFour = new Player();
+        Player playerOne = new Player(1);
+        Player playerTwo = new Player(2);
+        Player playerThree = new Player(3);
+        Player playerFour = new Player(4);
         int currentShields = -1;
         int revisedShields = -1;
         if(deck.getCurrentPlayerTurn() == 1) {
             currentShields = playerOne.getShields();
-            playerOne.setShields(event.drawPlagueCard(playerOne.getShields()));
+            event.drawPlagueCard(playerOne);
             revisedShields = playerOne.getShields();
         }
         else if(deck.getCurrentPlayerTurn() == 2) {
             currentShields = playerTwo.getShields();
-            playerTwo.setShields(event.drawPlagueCard(playerTwo.getShields()));
+            event.drawPlagueCard(playerTwo);
             revisedShields = playerTwo.getShields();
         }
         else if(deck.getCurrentPlayerTurn() == 3) {
             currentShields = playerThree.getShields();
-            playerThree.setShields(event.drawPlagueCard(playerThree.getShields()));
+            event.drawPlagueCard(playerThree);
             revisedShields = playerThree.getShields();
         }
         else if(deck.getCurrentPlayerTurn() == 4) {
             currentShields = playerFour.getShields();
-            playerFour.setShields(event.drawPlagueCard(playerFour.getShields()));
+            event.drawPlagueCard(playerFour);
             revisedShields = playerFour.getShields();
         }
         if(currentShields <= 2 ) {

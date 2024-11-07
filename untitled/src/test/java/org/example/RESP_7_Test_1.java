@@ -24,10 +24,10 @@ class RESP_7_Test_1 {
         deck.intializeAdventureDeck();
         deck.dealPlayersHands();
         deck.drawEventCard();
-        playerOne = new Player();
-        playerTwo = new Player();
-        playerThree = new Player();
-        playerFour = new Player();
+        playerOne = new Player(1);
+        playerTwo = new Player(2);
+        playerThree = new Player(3);
+        playerFour = new Player(4);
         playerOne.setHand(deck.player1Hand);
         playerTwo.setHand(deck.player2Hand);
         playerThree.setHand(deck.player3Hand);

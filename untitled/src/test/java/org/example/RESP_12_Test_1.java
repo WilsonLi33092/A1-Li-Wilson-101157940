@@ -10,10 +10,10 @@ import static org.junit.jupiter.api.Assertions.*;
 class RESP_12_Test_1 {
     @Test
     public void testParticipantDrawAndTrim() {
-        Player sponsor = new Player();
-        Player player1 = new Player();
-        Player player2 = new Player();
-        Player player3 = new Player();
+        Player sponsor = new Player(1);
+        Player player1 = new Player(2);
+        Player player2 = new Player(3);
+        Player player3 = new Player(4);
         sponsor.setNumPlayer(1);
         player1.setNumPlayer(2);
         player2.setNumPlayer(3);

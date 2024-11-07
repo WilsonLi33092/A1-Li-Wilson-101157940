@@ -21,10 +21,10 @@ class COMPULS_A_TEST {
       deck.dealPlayersHands();
       deck.getCurrentPlayerTurn();
       deck.drawEventCard();
-      Player playerOne = new Player();
-      Player playerTwo = new Player();
-      Player playerThree = new Player();
-      Player playerFour = new Player();
+      Player playerOne = new Player(1);
+      Player playerTwo = new Player(2);
+      Player playerThree = new Player(3);
+      Player playerFour = new Player(4);
       playerOne.setHand(deck.player1Hand);
       playerTwo.setHand(deck.player2Hand);
       playerThree.setHand(deck.player3Hand);
