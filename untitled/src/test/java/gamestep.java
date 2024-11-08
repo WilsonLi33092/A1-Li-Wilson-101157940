@@ -254,7 +254,133 @@ public class gamestep {
         deck.getAdventureDeck().set(28, foe1Player1);
         deck.getAdventureDeck().set(29, foe2Player1);
         deck.getAdventureDeck().set(30, foe2Player1);
+        deck.getAdventureDeck().set(31, foe1Player1);
+        deck.getAdventureDeck().set(32, foe1Player1);
+        deck.getAdventureDeck().set(33,foe1Player1);
+        deck.getAdventureDeck().set(34, weapon1Player1);
+        deck.getAdventureDeck().set(35, weapon1Player1);
+        deck.getAdventureDeck().set(36, weapon1Player1);
     }
+    @Given("A rigged deck for A1 scenario has started")
+    public void a_rigged_deck_for_A1_scenario_has_started() {
+        deck = new Decks();
+        deck.intializeAdventureDeck();
+        deck.intializeEventDeck();
+        deck.intializeAdventureDeck();
+        deck.dealPlayersHands();
+        Card foe1Player1 = new Card();
+        Card foe2Player1 = new Card();
+        Card weapon1Player1 = new Card();
+        Card weapon2Player1 = new Card();
+        Card weapon3Player1 = new Card();
+        Card weapon4Player1 = new Card();
+        Card weapon5Player1 = new Card();
+        foe1Player1.setType("Foe");
+        foe1Player1.setValue(5);
+        foe1Player1.setSortValue(1);
+        foe2Player1.setType("Foe");
+        foe2Player1.setValue(15);
+        foe2Player1.setSortValue(3);
+        weapon1Player1.setType("Dagger");
+        weapon1Player1.setValue(5);
+        weapon1Player1.setSortValue(11);
+        weapon2Player1.setType("Sword");
+        weapon2Player1.setValue(10);
+        weapon2Player1.setSortValue(12);
+        weapon3Player1.setType("Horse");
+        weapon3Player1.setValue(10);
+        weapon3Player1.setSortValue(13);
+        weapon4Player1.setType("Battle-Axe");
+        weapon4Player1.setValue(15);
+        weapon4Player1.setSortValue(14);
+        weapon5Player1.setType("Lance");
+        weapon5Player1.setValue(20);
+        weapon5Player1.setSortValue(15);
+        Card foe3Player2 = new Card();
+        Card weapon5Player2 = new Card();
+        foe3Player2.setType("Foe");
+        foe3Player2.setValue(40);
+        foe3Player2.setSortValue(8);
+        weapon5Player2.setType("Excalibur");
+        weapon5Player2.setValue(50);
+        weapon5Player2.setSortValue(16);
+        ArrayList<Card> riggedPlayer1Hand = new ArrayList<>();
+        ArrayList<Card> riggedPlayer2Hand = new ArrayList<>();
+        ArrayList<Card> riggedPlayer3Hand = new ArrayList<>();
+        ArrayList<Card> riggedPlayer4Hand = new ArrayList<>();
+        riggedPlayer1Hand.add(foe1Player1);
+        riggedPlayer1Hand.add(foe1Player1);
+        riggedPlayer1Hand.add(foe2Player1);
+        riggedPlayer1Hand.add(foe2Player1);
+        riggedPlayer1Hand.add(weapon1Player1);
+        riggedPlayer1Hand.add(weapon2Player1);
+        riggedPlayer1Hand.add(weapon2Player1);
+        riggedPlayer1Hand.add(weapon3Player1);
+        riggedPlayer1Hand.add(weapon3Player1);
+        riggedPlayer1Hand.add(weapon4Player1);
+        riggedPlayer1Hand.add(weapon4Player1);
+        riggedPlayer1Hand.add(weapon5Player1);
+        playerOne.setHand(riggedPlayer1Hand);
+        riggedPlayer2Hand.add(foe1Player1);
+        riggedPlayer2Hand.add(foe1Player1);
+        riggedPlayer2Hand.add(foe2Player1);
+        riggedPlayer2Hand.add(foe2Player1);
+        riggedPlayer2Hand.add(foe3Player2);
+        riggedPlayer2Hand.add(weapon1Player1);
+        riggedPlayer2Hand.add(weapon2Player1);
+        riggedPlayer2Hand.add(weapon3Player1);
+        riggedPlayer2Hand.add(weapon3Player1);
+        riggedPlayer2Hand.add(weapon4Player1);
+        riggedPlayer2Hand.add(weapon4Player1);
+        riggedPlayer2Hand.add(weapon5Player2);
+        playerTwo.setHand(riggedPlayer2Hand);
+        riggedPlayer3Hand.add(foe1Player1);
+        riggedPlayer3Hand.add(foe1Player1);
+        riggedPlayer3Hand.add(foe1Player1);
+        riggedPlayer3Hand.add(foe2Player1);
+        riggedPlayer3Hand.add(weapon1Player1);
+        riggedPlayer3Hand.add(weapon2Player1);
+        riggedPlayer3Hand.add(weapon2Player1);
+        riggedPlayer3Hand.add(weapon2Player1);
+        riggedPlayer3Hand.add(weapon3Player1);
+        riggedPlayer3Hand.add(weapon3Player1);
+        riggedPlayer3Hand.add(weapon4Player1);
+        riggedPlayer3Hand.add(weapon5Player1);
+        playerThree.setHand(riggedPlayer3Hand);
+        riggedPlayer4Hand.add(foe1Player1);
+        riggedPlayer4Hand.add(foe2Player1);
+        riggedPlayer4Hand.add(foe2Player1);
+        riggedPlayer4Hand.add(foe3Player2);
+        riggedPlayer4Hand.add(weapon1Player1);
+        riggedPlayer4Hand.add(weapon1Player1);
+        riggedPlayer4Hand.add(weapon2Player1);
+        riggedPlayer4Hand.add(weapon3Player1);
+        riggedPlayer4Hand.add(weapon3Player1);
+        riggedPlayer4Hand.add(weapon4Player1);
+        riggedPlayer4Hand.add(weapon5Player1);
+        riggedPlayer4Hand.add(weapon5Player2);
+        playerFour.setHand(riggedPlayer4Hand);
+        Card player1DrawCardStage1 = deck.getAdventureDeck().get(0);
+        player1DrawCardStage1.setType("Foe");
+        player1DrawCardStage1.setValue(30);
+        player1DrawCardStage1.setSortValue(6);
+        Card player1DrawCardStage2 = deck.getAdventureDeck().get(0);
+        player1DrawCardStage2.setType("Foe");
+        player1DrawCardStage2.setValue(10);
+        player1DrawCardStage2.setSortValue(2);
+        deck.getAdventureDeck().set(0, player1DrawCardStage1);
+        deck.getAdventureDeck().set(1,weapon2Player1);
+        deck.getAdventureDeck().set(2,weapon4Player1);
+        deck.getAdventureDeck().set(3,player1DrawCardStage2);
+        deck.getAdventureDeck().set(4,weapon5Player1);
+        deck.getAdventureDeck().set(5, weapon5Player1);
+        deck.getAdventureDeck().set(6, weapon4Player1);
+        deck.getAdventureDeck().set(7,weapon2Player1);
+        deck.getAdventureDeck().set(8,player1DrawCardStage1);
+        deck.getAdventureDeck().set(9,weapon5Player1);
+    }
+
+
     @When("Player {int} has drawn a {int} stage quest and says {string}")
     public void player_has_drawn_a_stage_quest_and_says(Integer int1, Integer int2, String choice) {
         Player placeholder = new Player(0);
@@ -276,28 +402,90 @@ public class gamestep {
         }
         if(int1 == 1) {
             System.out.println(playerOne.getHand());
-            List<String> decisions = Arrays.asList(choice, "N", "N", "N");
-            placeholder = playerOne;
-            List<Player> participants = List.of(playerTwo, playerThree, playerFour);
-            quest = new Quest(null,playerOne,participants);
+            if(choice.equalsIgnoreCase("Y")) {
+                List<String> decisions = Arrays.asList(choice, "N", "N", "N");
+                placeholder = playerOne;
+                List<Player> participants = List.of(playerTwo, playerThree, playerFour);
+                quest = new Quest(null, playerOne, participants);
+            }
         }
         if(int1 == 2) {
-            List<String> decisions = Arrays.asList("N", choice, "N", "N");
-            placeholder = playerTwo;
-            List<Player> participants = List.of(playerOne, playerThree, playerFour);
-            quest = new Quest(null,playerTwo,participants);
+            if(choice.equalsIgnoreCase("Y")) {
+                List<String> decisions = Arrays.asList("N", choice, "N", "N");
+                placeholder = playerTwo;
+                List<Player> participants = List.of(playerOne, playerThree, playerFour);
+                quest = new Quest(null, playerTwo, participants);
+            }
         }
         if(int1 == 3) {
-            List<String> decisions = Arrays.asList("N", "N", choice, "N");
-            placeholder = playerThree;
-            List<Player> participants = List.of(playerOne, playerTwo, playerFour);
-            quest = new Quest(null,playerThree,participants);
+            if(choice.equalsIgnoreCase("Y")) {
+                List<String> decisions = Arrays.asList("N", "N", choice, "N");
+                placeholder = playerThree;
+                List<Player> participants = List.of(playerOne, playerTwo, playerFour);
+                quest = new Quest(null, playerThree, participants);
+            }
         }
         if(int1 == 4) {
-            List<String> decisions = Arrays.asList("N", "N", "N", choice);
-            placeholder = playerFour;
-            List<Player> participants = List.of(playerOne, playerTwo, playerThree);
-            quest = new Quest(null,playerFour,participants);
+            if(choice.equalsIgnoreCase("Y")) {
+                List<String> decisions = Arrays.asList("N", "N", "N", choice);
+                placeholder = playerFour;
+                List<Player> participants = List.of(playerOne, playerTwo, playerThree);
+                quest = new Quest(null, playerFour, participants);
+            }
+        }
+    }
+    @And("Player {int} sponsors the {int} stage quest and says {string}")
+    public void player_sponsors_the_stage_quest_and_says(Integer int1, Integer int2, String choice) {
+        Player placeholder = new Player(0);
+        if(int2 == 2) {
+            deck.getEventDeck().set(0, "Quest 2");
+            deck.drawEventCard();
+        }
+        if(int2 == 3) {
+            deck.getEventDeck().set(0, "Quest 3");
+            deck.drawEventCard();
+        }
+        if(int2 == 4) {
+            deck.getEventDeck().set(0, "Quest 4");
+            deck.drawEventCard();
+        }
+        if(int2 == 5) {
+            deck.getEventDeck().set(0, "Quest 5");
+            deck.drawEventCard();
+        }
+        if(int1 == 1) {
+            System.out.println(playerOne.getHand());
+            if(choice.equalsIgnoreCase("Y")) {
+                List<String> decisions = Arrays.asList(choice, "N", "N", "N");
+                placeholder = playerOne;
+                List<Player> participants = List.of(playerTwo, playerThree, playerFour);
+                quest = new Quest(null, playerOne, participants);
+            }
+        }
+        if(int1 == 2) {
+            if(choice.equalsIgnoreCase("Y")) {
+                List<String> decisions = Arrays.asList("N", choice, "N", "N");
+                placeholder = playerTwo;
+                List<Player> participants = List.of(playerOne, playerThree, playerFour);
+                quest = new Quest(null, playerTwo, participants);
+            }
+        }
+        if(int1 == 3) {
+            System.out.println(playerThree.getHand());
+            if(choice.equalsIgnoreCase("Y")) {
+                List<String> decisions = Arrays.asList("N", "N", choice, "N");
+                placeholder = playerThree;
+                List<Player> participants = List.of(playerOne, playerTwo, playerFour);
+                quest = new Quest(null, playerThree, participants);
+            }
+        }
+        if(int1 == 4) {
+            if(choice.equalsIgnoreCase("Y")) {
+                List<String> decisions = Arrays.asList("N", "N", "N", choice);
+                placeholder = playerFour;
+                List<Player> participants = List.of(playerOne, playerTwo, playerThree);
+                quest = new Quest(null, playerFour, participants);
+            }
         }
     }
     @And("Player 1 draws a 3 stage quest and decides to sponsor it")
@@ -347,24 +535,32 @@ public class gamestep {
         }
 
     }
-    @And ("Player {int} participates in stage {int}")
-    public void player_participates_in_stage(Integer int1, Integer int2) {
+    @And ("Player {int} {string} in stage {int}")
+    public void player_in_stage(Integer int1, String string1, Integer int2) {
         List<Player> remainingPlayer = quest.getEligibleParticipants(0);
         if(int1 == 1) {
-            quest.promptParticipation(int2, playerOne, "continue");
-            assertTrue(remainingPlayer.contains(playerOne));
+            if(string1.equalsIgnoreCase("participates")) {
+                quest.promptParticipation(int2, playerOne, "continue");
+                assertTrue(remainingPlayer.contains(playerOne));
+            }
         }
         if(int1 == 2){
-            quest.promptParticipation(int2, playerTwo, "continue");
-            assertTrue(remainingPlayer.contains(playerTwo));
+            if(string1.equalsIgnoreCase("participates")) {
+                quest.promptParticipation(int2, playerTwo, "continue");
+                assertTrue(remainingPlayer.contains(playerTwo));
+            }
         }
         if(int1 == 3) {
-            quest.promptParticipation(int2, playerThree, "continue");
-            assertTrue(remainingPlayer.contains(playerThree));
+            if(string1.equalsIgnoreCase("participates")) {
+                quest.promptParticipation(int2, playerThree, "continue");
+                assertTrue(remainingPlayer.contains(playerThree));
+            }
         }
         if(int1 == 4 ) {
-            quest.promptParticipation(int2, playerFour, "continue");
-            assertTrue(remainingPlayer.contains(playerFour));
+            if(string1.equalsIgnoreCase("participates")) {
+                quest.promptParticipation(int2, playerFour, "continue");
+                assertTrue(remainingPlayer.contains(playerFour));
+            }
         }
     }
     @And ("Player {int} builds their attack by choosing {string}")
@@ -473,6 +669,12 @@ public class gamestep {
       //  }
 
    // }
+    @And("Stage {int} is resolved")
+    public void stage_is_resolved(Integer int1) {
+        List<Player> remainingPlayers;
+        remainingPlayers = quest.getEligibleParticipants(int1-1);
+        remainingPlayers = quest.resolveStage(quest.getStages().get(int1-1), List.of(playerOneAttack,playerTwoAttack,playerThreeAttack,playerFourAttack),remainingPlayers);
+    }
 
     @And("There is no winner")
     public void there_is_no_winner() {
