@@ -704,36 +704,6 @@ public class gamestep {
         playerFourAttack.clearAttack();
         assertEquals(initialHandSize,placeholder.getHand().size());
     }
-    @Then("Player {int} earns shields")
-    public void player_earns_shields(Integer int1) {
-        int intialShield = 0;
-        int shieldsToGain = quest.getStages().size();
-        int newShields = 0;
-        if(int1 == 1){
-            intialShield = playerOne.getShields();
-            newShields = intialShield + shieldsToGain;
-            playerOne.setShields(newShields);
-            assertEquals(newShields, playerOne.getShields());
-        }
-        if(int1 == 2) {
-            intialShield = playerTwo.getShields();
-            newShields = intialShield + shieldsToGain;
-            playerTwo.setShields(newShields);
-            assertEquals(newShields, playerTwo.getShields());
-        }
-        if(int1 == 3) {
-            intialShield = playerThree.getShields();
-            newShields = intialShield + shieldsToGain;
-            playerThree.setShields(newShields);
-            assertEquals(newShields, playerThree.getShields());
-        }
-        if(int1 == 4) {
-            intialShield = playerFour.getShields();
-            newShields = intialShield + shieldsToGain;
-            playerFour.setShields(newShields);
-            assertEquals(newShields, playerFour.getShields());
-        }
-    }
     @And ("Player {int} draws plague card and loses 2 shields")
     public void player_draws_plague_card_and_loses_2_shields(Integer int1) {
         int intialShields = 0;
@@ -872,6 +842,36 @@ public class gamestep {
         }
         if(int1 == 4) {
             assertTrue(winners.contains(playerFour));
+        }
+    }
+    @And("Player {int} has {int} shields")
+    public void player_has_shields(Integer int1, int int2) {
+        if(int1 == 1) {
+            assertEquals(int2, playerOne.getShields());
+        }
+        if(int1 == 2) {
+            assertEquals(int2, playerTwo.getShields());
+        }
+        if(int1 == 3) {
+            assertEquals(int2, playerThree.getShields());
+        }
+        if(int1 ==4) {
+            assertEquals(int2, playerFour.getShields());
+        }
+    }
+    @And("Player {int} has {int} cards")
+    public void player_has_cards(Integer int1, int int2) {
+        if(int1 == 1) {
+            assertEquals(int2, playerOne.getHand().size());
+        }
+        if(int1 == 2) {
+            assertEquals(int2, playerTwo.getHand().size());
+        }
+        if(int1 == 3) {
+            assertEquals(int2, playerThree.getHand().size());
+        }
+        if(int1 ==4) {
+            assertEquals(int2, playerFour.getHand().size());
         }
     }
 }

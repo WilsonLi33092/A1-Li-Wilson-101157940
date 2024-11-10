@@ -43,6 +43,8 @@ Feature: Adventure game
     And Player 4 builds their attack by choosing "5"
     And Stage 2 is resolved
     And Eligible players move onto the next stage
+    And Player 1 has 0 shields
+    And Player 1 has 9 cards
     And Player 3 "participates" in stage 3
     And Player 3 draws a card
     And Player 4 "participates" in stage 3
@@ -67,8 +69,12 @@ Feature: Adventure game
     And Player 4 builds their attack by choosing "3"
     And Player 4 builds their attack by choosing "4"
     And Stage 4 is resolved
-    And Player 4 earns shields
+    And Player 3 has 0 shields
+    And Player 3 has 5 cards
+    And Player 4 has 4 shields
+    And Player 4 has 4 cards
     And Player 2 discards the amount of cards used for the quest and redraws the same amount
+    And Player 2 has 12 cards
 
   Scenario: 2 winner quest with events
     Given A rigged deck for 1 winner quest has started
@@ -126,9 +132,7 @@ Feature: Adventure game
     And Player 4 builds their attack by choosing "5"
     And Player 4 builds their attack by choosing "5"
     And Stage 4 is resolved
-    Then Player 2 earns shields
-    And Player 4 earns shields
-    And Player 1 discards the amount of cards used for the quest and redraws the same amount
+    Then Player 1 discards the amount of cards used for the quest and redraws the same amount
     And Player 2 has drawn a 4 stage quest and says "N"
     And Player 3 sponsors the 4 stage quest and says "Y"
     And Player 3 chooses indices "0" for stage 1
@@ -159,10 +163,10 @@ Feature: Adventure game
     And Player 4 draws a card
     And Player 4 builds their attack by choosing "7"
     And Stage 3 is resolved
-    And Player 2 earns shields
-    And Player 4 earns shields
     And Player 2 wins the game
     And Player 4 wins the game
+    And Player 2 has 7 shields
+    And Player 4 has 7 shields
 
 
 
@@ -188,6 +192,14 @@ Feature: Adventure game
     And Stage 1 is resolved
     And There is no winner
     And Player 1 discards the amount of cards used for the quest and redraws the same amount
+    And Player 1 has 0 shields
+    And Player 2 has 0 shields
+    And Player 3 has 0 shields
+    And Player 4 has 0 shields
+    And Player 1 has 12 cards
+    And Player 2 has 11 cards
+    And Player 3 has 11 cards
+    And Player 4 has 11 cards
 
   Scenario: 1 winner quest with events
     Given A rigged deck for 1 winner quest has started
@@ -247,10 +259,7 @@ Feature: Adventure game
     And Player 4 builds their attack by choosing "4"
     And Player 4 builds their attack by choosing "8"
     And Stage 4 is resolved
-    Then Player 2 earns shields
-    And Player 3 earns shields
-    And Player 4 earns shields
-    And Player 1 discards the amount of cards used for the quest and redraws the same amount
+    Then Player 1 discards the amount of cards used for the quest and redraws the same amount
     And Player 2 draws plague card and loses 2 shields
     And Player 3 draws prosperity making all players draw 2 adventure cards
     And Player 1 trims their hand by choosing index "7" to discard
@@ -298,6 +307,7 @@ Feature: Adventure game
     And Player 3 builds their attack by choosing "8"
     And Stage 3 is resolved
     And Player 1 discards the amount of cards used for the quest and redraws the same amount
-    And Player 2 earns shields
-    And Player 3 earns shields
     And Player 3 wins the game
+    And Player 3 has 7 shields
+    And Player 2 has 5 shields
+    And Player 4 has 4 shields
