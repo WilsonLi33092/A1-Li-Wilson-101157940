@@ -1,10 +1,7 @@
 import io.cucumber.java.en.*;
 import org.example.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -380,33 +377,37 @@ public class gamestep {
         deck.getAdventureDeck().set(9,weapon5Player1);
     }
 
-
     @When("Player {int} has drawn a {int} stage quest and says {string}")
     public void player_has_drawn_a_stage_quest_and_says(Integer int1, Integer int2, String choice) {
         Player placeholder = new Player(0);
+        int intialEventDeckSize = deck.getEventDeckSize();
         if(int2 == 2) {
             deck.getEventDeck().set(0, "Quest 2");
             deck.drawEventCard();
+            assertEquals(intialEventDeckSize-1, deck.getEventDeckSize());
         }
         if(int2 == 3) {
             deck.getEventDeck().set(0, "Quest 3");
             deck.drawEventCard();
+            assertEquals(intialEventDeckSize-1, deck.getEventDeckSize());
         }
         if(int2 == 4) {
             deck.getEventDeck().set(0, "Quest 4");
             deck.drawEventCard();
+            assertEquals(intialEventDeckSize-1, deck.getEventDeckSize());
         }
         if(int2 == 5) {
             deck.getEventDeck().set(0, "Quest 5");
             deck.drawEventCard();
+            assertEquals(intialEventDeckSize-1, deck.getEventDeckSize());
         }
         if(int1 == 1) {
-            System.out.println(playerOne.getHand());
             if(choice.equalsIgnoreCase("Y")) {
                 List<String> decisions = Arrays.asList(choice, "N", "N", "N");
                 placeholder = playerOne;
                 List<Player> participants = List.of(playerTwo, playerThree, playerFour);
                 quest = new Quest(null, playerOne, participants);
+                assertTrue(!quest.getEligibleParticipants(0).contains(playerOne));
             }
         }
         if(int1 == 2) {
@@ -415,6 +416,7 @@ public class gamestep {
                 placeholder = playerTwo;
                 List<Player> participants = List.of(playerOne, playerThree, playerFour);
                 quest = new Quest(null, playerTwo, participants);
+                assertTrue(!quest.getEligibleParticipants(0).contains(playerTwo));
             }
         }
         if(int1 == 3) {
@@ -423,6 +425,7 @@ public class gamestep {
                 placeholder = playerThree;
                 List<Player> participants = List.of(playerOne, playerTwo, playerFour);
                 quest = new Quest(null, playerThree, participants);
+                assertTrue(!quest.getEligibleParticipants(0).contains(playerThree));
             }
         }
         if(int1 == 4) {
@@ -431,35 +434,41 @@ public class gamestep {
                 placeholder = playerFour;
                 List<Player> participants = List.of(playerOne, playerTwo, playerThree);
                 quest = new Quest(null, playerFour, participants);
+                assertTrue(!quest.getEligibleParticipants(0).contains(playerFour));
             }
         }
     }
     @And("Player {int} sponsors the {int} stage quest and says {string}")
     public void player_sponsors_the_stage_quest_and_says(Integer int1, Integer int2, String choice) {
         Player placeholder = new Player(0);
+        int intialEventDeckSize = deck.getEventDeckSize();
         if(int2 == 2) {
             deck.getEventDeck().set(0, "Quest 2");
             deck.drawEventCard();
+            assertEquals(intialEventDeckSize-1, deck.getEventDeckSize());
         }
         if(int2 == 3) {
             deck.getEventDeck().set(0, "Quest 3");
             deck.drawEventCard();
+            assertEquals(intialEventDeckSize-1, deck.getEventDeckSize());
         }
         if(int2 == 4) {
             deck.getEventDeck().set(0, "Quest 4");
             deck.drawEventCard();
+            assertEquals(intialEventDeckSize-1, deck.getEventDeckSize());
         }
         if(int2 == 5) {
             deck.getEventDeck().set(0, "Quest 5");
             deck.drawEventCard();
+            assertEquals(intialEventDeckSize-1, deck.getEventDeckSize());
         }
         if(int1 == 1) {
-            System.out.println(playerOne.getHand());
             if(choice.equalsIgnoreCase("Y")) {
                 List<String> decisions = Arrays.asList(choice, "N", "N", "N");
                 placeholder = playerOne;
                 List<Player> participants = List.of(playerTwo, playerThree, playerFour);
                 quest = new Quest(null, playerOne, participants);
+                assertTrue(!quest.getEligibleParticipants(0).contains(playerOne));
             }
         }
         if(int1 == 2) {
@@ -468,15 +477,16 @@ public class gamestep {
                 placeholder = playerTwo;
                 List<Player> participants = List.of(playerOne, playerThree, playerFour);
                 quest = new Quest(null, playerTwo, participants);
+                assertTrue(!quest.getEligibleParticipants(0).contains(playerTwo));
             }
         }
         if(int1 == 3) {
-            System.out.println(playerThree.getHand());
             if(choice.equalsIgnoreCase("Y")) {
                 List<String> decisions = Arrays.asList("N", "N", choice, "N");
                 placeholder = playerThree;
                 List<Player> participants = List.of(playerOne, playerTwo, playerFour);
                 quest = new Quest(null, playerThree, participants);
+                assertTrue(!quest.getEligibleParticipants(0).contains(playerThree));
             }
         }
         if(int1 == 4) {
@@ -485,6 +495,7 @@ public class gamestep {
                 placeholder = playerFour;
                 List<Player> participants = List.of(playerOne, playerTwo, playerThree);
                 quest = new Quest(null, playerFour, participants);
+                assertTrue(!quest.getEligibleParticipants(0).contains(playerFour));
             }
         }
     }
@@ -503,6 +514,7 @@ public class gamestep {
         stages.add(stage3);
         List<Player> participants = List.of(playerTwo, playerThree, playerFour);
         quest = new Quest(stages, playerOne, participants);
+        assertTrue(!quest.getEligibleParticipants(0).contains(playerThree));
     }
     @Then ("Player {int} chooses indices {string} for stage {int}")
     public void player_chooses_indices_for_stage(Integer int1, String string1, Integer int2) {
@@ -565,32 +577,26 @@ public class gamestep {
     }
     @And ("Player {int} builds their attack by choosing {string}")
     public void player_builds_their_attack(Integer int1, String string1) {
-        ArrayList<Card> cardChoices = new ArrayList<>();
-        Attack placeholderAttack;
-        int intialAttackSize = 0;
+        int initialAttackSize = 0;
         if(int1 == 1) {
-            intialAttackSize = playerOneAttack.getAttackCards().size();
-            System.out.println(playerOne.getHand());
+            initialAttackSize = playerOneAttack.getAttackCards().size();
             quest.promptPlayerForAttack(playerOne, string1, playerOneAttack);
-            assertEquals(intialAttackSize+1, playerOneAttack.getAttackCards().size());
+            assertEquals(initialAttackSize+1, playerOneAttack.getAttackCards().size());
         }
         if(int1 ==2) {
-            intialAttackSize = playerTwoAttack.getAttackCards().size();
-            System.out.println(playerTwo.getHand());
+            initialAttackSize = playerTwoAttack.getAttackCards().size();
             quest.promptPlayerForAttack(playerTwo, string1, playerTwoAttack);
-            assertEquals(intialAttackSize + 1, playerTwoAttack.getAttackCards().size());
+            assertEquals(initialAttackSize + 1, playerTwoAttack.getAttackCards().size());
         }
         if(int1 == 3) {
-            intialAttackSize = playerThreeAttack.getAttackCards().size();
-            System.out.println(playerThree.getHand());
+            initialAttackSize = playerThreeAttack.getAttackCards().size();
             quest.promptPlayerForAttack(playerThree, string1, playerThreeAttack);
-            assertEquals(intialAttackSize + 1, playerThreeAttack.getAttackCards().size());
+            assertEquals(initialAttackSize + 1, playerThreeAttack.getAttackCards().size());
         }
         if(int1 == 4) {
-            intialAttackSize = playerFourAttack.getAttackCards().size();
-            System.out.println(playerFour.getHand());
+            initialAttackSize = playerFourAttack.getAttackCards().size();
             quest.promptPlayerForAttack(playerFour, string1, playerFourAttack);
-            assertEquals(intialAttackSize + 1, playerFourAttack.getAttackCards().size());
+            assertEquals(initialAttackSize + 1, playerFourAttack.getAttackCards().size());
         }
     }
     @And("Eligible players move onto the next stage")
@@ -599,29 +605,38 @@ public class gamestep {
         playerTwoAttack.clearAttack();
         playerThreeAttack.clearAttack();
         playerFourAttack.clearAttack();
+        assertTrue(playerOneAttack.getAttackCards().isEmpty());
+        assertTrue(playerTwoAttack.getAttackCards().isEmpty());
+        assertTrue(playerThreeAttack.getAttackCards().isEmpty());
+        assertTrue(playerFourAttack.getAttackCards().isEmpty());
     }
     @And("Player {int} draws a card")
     public void player_draws_a_card(Integer int1) {
+        int initialPlayerOneHandSize = playerOne.getHand().size();
+        int initialPlayerTwoHandSize = playerTwo.getHand().size();
+        int initialPlayerThreeHandSize = playerThree.getHand().size();
+        int initialPlayerFourHandSize = playerFour.getHand().size();
         int deckIntialSize = deck.getAdventureDeckSize();
         if(int1 == 1) {
-            System.out.println(playerOne.getHand().size());
             playerOne.getHand().add(deck.drawRiggedCard());
             playerOne.getHand().sort(Comparator.comparingInt(card -> card.getSortValue()));
+            assertEquals(initialPlayerOneHandSize+1, playerOne.getHand().size());
+
         }
         if(int1 == 2) {
-            System.out.println(playerTwo.getHand().size());
             playerTwo.getHand().add(deck.drawRiggedCard());
             playerTwo.getHand().sort(Comparator.comparingInt(card -> card.getSortValue()));
+            assertEquals(initialPlayerTwoHandSize+1, playerTwo.getHand().size());
         }
         if(int1 == 3) {
-            System.out.println(playerThree.getHand().size());
             playerThree.getHand().add(deck.drawRiggedCard());
             playerThree.getHand().sort(Comparator.comparingInt(card -> card.getSortValue()));
+            assertEquals(initialPlayerThreeHandSize+1, playerThree.getHand().size());
         }
         if(int1 == 4) {
-            System.out.println(playerFour.getHand().size());
             playerFour.getHand().add(deck.drawRiggedCard());
             playerFour.getHand().sort(Comparator.comparingInt(card -> card.getSortValue()));
+            assertEquals(initialPlayerFourHandSize+1, playerFour.getHand().size());
         }
         assertEquals(deckIntialSize-1, deck.getAdventureDeckSize());
     }
@@ -648,27 +663,6 @@ public class gamestep {
             assertEquals(p4handsize-1, playerFour.getHand().size());
         }
     }
-    //@And("Player {int} loses stage {int}")
-    //public void player_loses_the_stage(Integer int1, Integer int2) {
-    //    List<Player> remainingPlayers = quest.getEligibleParticipants(int2-1);
-    //    if(int1 == 1){
-    //        quest.resolveStage(quest.getStages().get(int2-1), List.of(playerTwoAttack),remainingPlayers);
-    //        assertTrue(remainingPlayers.contains(playerOne));
-     //   }
-     //   if(int1 == 2) {
-     //       quest.resolveStage(quest.getStages().get(int2-1), List.of(playerTwoAttack),remainingPlayers);
-     //       assertTrue(remainingPlayers.contains(playerTwo));
-     //   }
-     //   if(int1 == 3) {
-     //       quest.resolveStage(quest.getStages().get(int2-1), List.of(playerThreeAttack),remainingPlayers);
-     //       assertTrue(remainingPlayers.contains(playerThree));
-     //   }
-     //   if(int1 == 4) {
-     //       quest.resolveStage(quest.getStages().get(int2-1), List.of(playerFourAttack),remainingPlayers);
-      //      assertTrue(remainingPlayers.contains(playerFour));
-      //  }
-
-   // }
     @And("Stage {int} is resolved")
     public void stage_is_resolved(Integer int1) {
         List<Player> remainingPlayers;
@@ -679,7 +673,7 @@ public class gamestep {
     @And("There is no winner")
     public void there_is_no_winner() {
         List<Player> remainingPlayers = quest.getEligibleParticipants(-1);
-        assertEquals(0, remainingPlayers.size());
+        assertTrue(remainingPlayers.isEmpty());
     }
     @And("Player {int} discards the amount of cards used for the quest and redraws the same amount")
     public void player_discards_the_amount_of_cards_used_for_the_quest_and_redraws_the_same_amount(Integer int1) {
@@ -693,6 +687,7 @@ public class gamestep {
         } else if(int1 == 4) {
             placeholder = playerFour;
         }
+        int initialHandSize = placeholder.getHand().size();
         String newString ="";
         for(int i =0; i<quest.getIndices().size();i++) {
             newString += quest.getIndices().get(i);
@@ -707,12 +702,12 @@ public class gamestep {
         playerTwoAttack.clearAttack();
         playerThreeAttack.clearAttack();
         playerFourAttack.clearAttack();
+        assertEquals(initialHandSize,placeholder.getHand().size());
     }
     @Then("Player {int} earns shields")
     public void player_earns_shields(Integer int1) {
         int intialShield = 0;
         int shieldsToGain = quest.getStages().size();
-        System.out.println(shieldsToGain);
         int newShields = 0;
         if(int1 == 1){
             intialShield = playerOne.getShields();
@@ -727,15 +722,10 @@ public class gamestep {
             assertEquals(newShields, playerTwo.getShields());
         }
         if(int1 == 3) {
-            System.out.println(intialShield);
             intialShield = playerThree.getShields();
-            System.out.println("Intial shields" + intialShield);
             newShields = intialShield + shieldsToGain;
-            System.out.println(playerThree.getShields());
             playerThree.setShields(newShields);
-            System.out.println(playerThree.getShields());
             assertEquals(newShields, playerThree.getShields());
-            System.out.println(playerThree.getShields());
         }
         if(int1 == 4) {
             intialShield = playerFour.getShields();
@@ -801,20 +791,6 @@ public class gamestep {
         assertEquals(intialHand3+2,playerThree.getHand().size());
         assertEquals(intialHand4+2,playerFour.getHand().size());
         assertEquals(intialAdventureDeckSize-8, deck.getAdventureDeckSize());
-        if(playerOne.getHand().size() > 12) {
-            System.out.println(playerOne.getHand().size());
-            System.out.println(playerOne.getHand());
-            System.out.println("PLAYER ONE NEEDA TRIM");
-        }
-        if(playerTwo.getHand().size() > 12) {
-            System.out.println("PLAYER TWO NEEDA TRIM");
-        }
-        if(playerThree.getHand().size() > 12) {
-            System.out.println("PLAYER THREE NEEDA TRIM");
-        }
-        if(playerFour.getHand().size() > 12) {
-            System.out.println("PLAYER FOUR NEEDA TRIM");
-        }
     }
     @And("Player {int} draws queens favour and draws 2 adventure cards")
     public void player_draws_queens_favour_and_draws_2_adventure_cards(Integer int1) {
@@ -844,7 +820,6 @@ public class gamestep {
     @And("Player {int} {string} stage {int}")
     public void player_stage(Integer int1, String string1, Integer int2) {
         List<Player> remainingPlayers = quest.getEligibleParticipants(int2-1);
-        System.out.println(remainingPlayers.get(0).getNumPlayer());
         if(int1 == 1){
             remainingPlayers = quest.resolveStage(quest.getStages().get(int2-1), List.of(playerOneAttack),remainingPlayers);
             if(string1.equalsIgnoreCase("wins")) {
