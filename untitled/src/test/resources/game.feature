@@ -3,7 +3,7 @@ Feature: Adventure game
     Given A rigged deck for A1 scenario has started
     When Player 1 has drawn a 4 stage quest and says "N"
     And Player 2 sponsors the 4 stage quest and says "Y"
-    And Player 2 chooses indices "0" for stage 1
+    Then Player 2 chooses indices "0" for stage 1
     And Player 2 chooses indices "7" for stage 1
     And Player 2 chooses indices "2" for stage 2
     And Player 2 chooses indices "6" for stage 2
