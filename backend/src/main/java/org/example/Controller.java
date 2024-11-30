@@ -33,16 +33,6 @@ public class Controller {
         resetGame();
         int currentPlayerTurn = deck.getCurrentPlayerTurn();
 
-        if (currentPlayerTurn == 1) {
-            placeholder = playerOne;
-        } else if (currentPlayerTurn == 2) {
-            placeholder = playerTwo;
-        } else if (currentPlayerTurn == 3) {
-            placeholder = playerThree;
-        } else if (currentPlayerTurn == 4) {
-            placeholder = playerFour;
-        }
-
         String eventCard = deck.drawEventCard();
         playerOne.setHand(deck.player1Hand);
         playerTwo.setHand(deck.player2Hand);
@@ -54,36 +44,21 @@ public class Controller {
         playerThree.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
         playerFour.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
 
-        List<String> playerOneHand = playerOne.getHand().stream()
-                .map(card -> card.toString())
-                .collect(Collectors.toList());
-        List<String> playerTwoHand = playerTwo.getHand().stream()
-                .map(card -> card.toString())
-                .collect(Collectors.toList());
-        List<String> playerThreeHand = playerThree.getHand().stream()
-                .map(card -> card.toString())
-                .collect(Collectors.toList());
-        List<String> playerFourHand = playerFour.getHand().stream()
-                .map(card -> card.toString())
-                .collect(Collectors.toList());
-
-        System.out.println("Player 1 Hand: " + playerOneHand);
-        System.out.println("Player 2 Hand: " + playerTwoHand);
-        System.out.println("Player 3 Hand: " + playerThreeHand);
-        System.out.println("Player 4 Hand: " + playerFourHand);
-
         Map<String, Object> response = new HashMap<>();
         response.put("currentTurn", currentPlayerTurn);
         response.put("message", "Game started.");
-        response.put("playerOneHand", playerOneHand);
+        response.put("playerOneHand", playerOne.getHand().stream().map(Card::toString).collect(Collectors.toList()));
         response.put("playerOneShields", playerOne.getShields());
-        response.put("playerTwoHand", playerTwoHand);
+        response.put("playerTwoHand", playerTwo.getHand().stream().map(Card::toString).collect(Collectors.toList()));
         response.put("playerTwoShields", playerTwo.getShields());
-        response.put("playerThreeHand", playerThreeHand);
+        response.put("playerThreeHand", playerThree.getHand().stream().map(Card::toString).collect(Collectors.toList()));
         response.put("playerThreeShields", playerThree.getShields());
-        response.put("playerFourHand", playerFourHand);
+        response.put("playerFourHand", playerFour.getHand().stream().map(Card::toString).collect(Collectors.toList()));
         response.put("playerFourShields", playerFour.getShields());
-
+        System.out.println("Player One Hand: " + playerOne.getHand());
+        System.out.println("Player Two Hand: " + playerTwo.getHand());
+        System.out.println("Player Three Hand: " + playerThree.getHand());
+        System.out.println("Player Four Hand: " + playerFour.getHand());
         return response;
     }
 
@@ -95,6 +70,25 @@ public class Controller {
         response.put("card", newCard);
         return response;
     }
+    @PostMapping("drawProsperity")
+    public Map<String, Object> drawPropserity() {
+        event.drawProsperity(playerOne.getHand(),playerTwo.getHand(),playerThree.getHand(),playerFour.getHand(),deck.adventureDeck);
+        Map<String, Object> response = new HashMap<>();
+        playerOne.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
+        playerTwo.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
+        playerThree.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
+        playerFour.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
+        response.put("playerOneHand", playerOne.getHand().stream().map(Card::toString).collect(Collectors.toList()));
+        response.put("playerOneShields", playerOne.getShields());
+        response.put("playerTwoHand", playerTwo.getHand().stream().map(Card::toString).collect(Collectors.toList()));
+        response.put("playerTwoShields", playerTwo.getShields());
+        response.put("playerThreeHand", playerThree.getHand().stream().map(Card::toString).collect(Collectors.toList()));
+        response.put("playerThreeShields", playerThree.getShields());
+        response.put("playerFourHand", playerFour.getHand().stream().map(Card::toString).collect(Collectors.toList()));
+        response.put("playerFourShields", playerFour.getShields());
+        return response;
+
+    }
 
     private void resetGame() {
         deck = new Decks();
@@ -102,4 +96,5 @@ public class Controller {
         deck.intializeAdventureDeck();
         deck.dealPlayersHands();
     }
+
 }
