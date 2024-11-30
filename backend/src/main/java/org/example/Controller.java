@@ -76,9 +76,13 @@ public class Controller {
         response.put("currentTurn", currentPlayerTurn);
         response.put("message", "Game started.");
         response.put("playerOneHand", playerOneHand);
+        response.put("playerOneShields", playerOne.getShields());
         response.put("playerTwoHand", playerTwoHand);
+        response.put("playerTwoShields", playerTwo.getShields());
         response.put("playerThreeHand", playerThreeHand);
+        response.put("playerThreeShields", playerThree.getShields());
         response.put("playerFourHand", playerFourHand);
+        response.put("playerFourShields", playerFour.getShields());
 
         return response;
     }
