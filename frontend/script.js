@@ -14,7 +14,6 @@
             console.log("Handling Sponsorship in processUserInput")
             await determineSponsorResponse(command);
         } else {
-            updateGameDisplay("Invalid input type yes or no")
             return;
         }
      } else if (currentPhase === "buildQuest") {
@@ -206,36 +205,116 @@ function askPlayerForSponsorship(card) {
 
 async function handleSponsorship(card) {
     appendToGameDisplay(`Sponsorship for ${card} has been processed.`);
+    try{
+        const response = await fetch (`${apiBaseUrl}/startQuest`, {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({sponsorPlayerIndex: currentPlayerIndex}), });
+        if(!response.ok){
+            const errorMessage = await response.text();
+            throw new Error("Failed to make quest");
+        }
+    console.log("It gets to this point")
     const stageNumbers = getStageNumber(card);
     let stages = [];
     const userInputField = document.getElementById("user-input");
     userInputField.value = "";
+    updateGameDisplay("");
     for(let i =0; i< stageNumbers; i++) {
-        updateGameDisplay(`Choose the indices of cards you would like to sponsor for stage ${i + 1}. Enter indices separated by commas (e.g., "3,5")`);
-        const response = await getUserInput();
-        const indices = response.split(",").map((index) => parseInt(index.trim())).filter((num) => !isNaN(num));
+        appendToGameDisplay(`Choose the indices of cards you would like to sponsor for stage ${i + 1}. Enter indices separated by commas (e.g., "3,5")`);
+        const userResponse = await getUserInput();
+        const indices = userResponse.split(",").map((index) => parseInt(index.trim())).filter((num) => !isNaN(num));
         if (indices.length === 0) {
             appendToGameDisplay("Invalid input. Please enter valid card indices.");
             i--;
             continue;
         }
-        stages.push(indices);
-        console.log(indices);
-        console.log(stages);
+        try {
+            const addStageResponse = await fetch(`${apiBaseUrl}/addStage`, {method:"POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({
+                    sponsorPlayerIndex:currentPlayerIndex,selectedIndices: indices,}),});
+                    if(!addStageResponse.ok) {
+                        const errorMessage = await addStageResponse.text();
+                        appendToGameDisplay(`Error adding stage ${i+1}: ${errorMessage}`);
+                        i--;
+                    }
+                    appendToGameDisplay(`Stage ${i+1} added successfully`);
+                    stages.push(indices);
+                    console.log(indices);
+                    console.log(stages);
+        } catch (error) {
+            appendToGameDisplay(`Unexpected error adding stage ${i + 1}`);
+            console.error("Error adding stage:", error);
+            i--;
+        }
+        console.log(`Processing stage ${i + 1} of ${stageNumbers}`);
+        console.log(`Selected indices for stage ${i + 1}:`, indices)
     }
-    const questData ={
-        sponsorPlayer: currentPlayerIndex,
-        stages: stages
-    };
     try {
-        const response = await fetch (`${apiBaseUrl}/createQuest`, {method: "POST"});
-        const result = await response;
-    } catch (error) {
-        console.error("Error creating quest", error);
-    }
-    currentPlayerIndex = (currentPlayerIndex + 1) % playerList.length;
-    updateTurnDisplay(currentPlayerIndex + 1);
+        const makeResponse = await fetch(`${apiBaseUrl}/makeQuest`, {method:"POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({
+                    sponsorPlayerIndex:currentPlayerIndex}),});
+            if(!makeResponse.ok){
+                const errorMessage = await makeResponse.text();
+                console.error("Error while making quest")
+                throw new Error("Failed to make quest");
+            }
+            const makeResult = await makeResponse.json();
+            appendToGameDisplay("Quest made successfully");
+            const questResponse = await fetch (`${apiBaseUrl}/getQuest`);
+            if(questResponse.ok){
+                const quest = await questResponse.json();
+                await handleQuestParticipation(quest);
+            } else {
+                console.error("failed to fetch quest");
+            }
 
+    }catch(error) {
+        console.erroor("Error making quest")
+    }
+    } catch (error) {
+        console.error("Error during quest sponsorship");
+    }
+
+}
+
+async function handleQuestParticipation(quest) {
+    for (let stageIndex = 0; stageIndex < quest.stages.length; stageIndex++) {
+        const currentStage = quest.stages[stageIndex];
+        appendToGameDisplay(`Stage ${stageIndex + 1}: Do you want to participate in this stage?`);
+        const sponsorIndex = playerList.indexOf(quest.sponsor);
+        let startIndex = (sponsorIndex + 1) % playerList.length;
+        console.log(stageIndex);
+        for (let i = 0; i < playerList.length; i++) {
+            let startPlayerIndex = (startIndex + i) % playerList.length;
+            if (startPlayerIndex === currentPlayerIndex) continue;
+            const player = playerList[startPlayerIndex];
+            appendToGameDisplay(`Player ${startPlayerIndex + 1}, do you want to participate in Stage ${stageIndex + 1}? (Continue/Withdraw)`);
+            const userResponse = await getUserInput();
+            console.log(playerList.length);
+                        console.log(i);
+            if (userResponse.toLowerCase() === "continue") {
+                appendToGameDisplay(`Player ${startPlayerIndex + 1} has chosen to participate in Stage ${stageIndex + 1}.`);
+                console.log(`start player index ${startPlayerIndex}`);
+                console.log(stageIndex);
+                await updateParticipation(startPlayerIndex, stageIndex, "continue");
+                appendToGameDisplay(`Player ${startPlayerIndex +1} please choose the indices of cards you would like to use for your attack separted by a comma. E.g(3,5)`);
+                const attackResponse = await getUserInput();
+                const indices = attackResponse.split(",").map((index) => parseInt(index.trim())).filter((num) => !isNaN(num));
+                const response = await fetch(`${apiBaseUrl}/submitAttack`, {method: 'POST',headers: {'Content-Type': 'application/json'},body: JSON.stringify({playerIndex: startPlayerIndex,stageIndex: stageIndex,selectedCardIndices: indices})});
+                                if (response.ok) {
+                                    const result = await response.text();
+                                    appendToGameDisplay(result);
+
+                                    if (result.includes("failed")) {
+                                        await updateParticipation(startPlayerIndex, stageIndex, "withdraw");
+                                    }
+                                }
+            } else if(userResponse.toLowerCase() === "withdraw"){
+                appendToGameDisplay(`Player ${startPlayerIndex + 1} has chosen not to participate in Stage ${stageIndex + 1}.`);
+                await updateParticipation(startPlayerIndex, stageIndex, "withdraw");
+            }
+
+        }
+
+    }
+
+    appendToGameDisplay("All players have decided whether to participate in the stages.");
 }
 function getStageNumber(card) {
     const questMatch = card.match(/^Quest (\d+)$/);
@@ -257,4 +336,15 @@ function getUserInput() {
         submitButton.addEventListener("click",handleInput);
     });
 
+}
+async function updateParticipation(playerIndex, stageIndex, decision){
+    const response = await fetch(`${apiBaseUrl}/updateParticipation`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ playerIndex: playerIndex, stageIndex: stageIndex, decision: decision }),
+        });
+        console.log("Response from server:", response.status, await response.text());
+        if (!response.ok) {
+            console.error("Failed to update player participation");
+        }
 }

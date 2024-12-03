@@ -3,6 +3,7 @@ package org.example;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Array;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -19,6 +20,11 @@ public class Controller {
     Player playerFour = new Player();
     Player placeholder = new Player();
     List<Player> playerList = new ArrayList<>(List.of(playerOne,playerTwo,playerThree,playerFour));
+    List<Integer> usedCardIndices = new ArrayList<>();
+    ArrayList<Stage> stagesForQuest = new ArrayList<>();
+    int previousStageValue = 0;
+    Quest quest = new Quest(new ArrayList<>(), null, new ArrayList<>());
+
     int currentPlayerIndex = 0;
     private List<String> playerDecisions = new ArrayList<>(Collections.nCopies(4, "N"));
     int currentPlayerTurn = 1;
@@ -32,6 +38,10 @@ public class Controller {
     @GetMapping("/start")
     public Map<String, Object> startGame() {
         resetGame();
+        playerOne.setNumPlayer(1);
+        playerTwo.setNumPlayer(2);
+        playerThree.setNumPlayer(3);
+        playerFour.setNumPlayer(4);
         int currentPlayerTurn = deck.getCurrentPlayerTurn();
 
         String eventCard = deck.drawEventCard();
@@ -148,6 +158,122 @@ public class Controller {
         deck.intializeEventDeck();
         deck.intializeAdventureDeck();
         deck.dealPlayersHands();
+    }
+    @PostMapping("startQuest")
+    public ResponseEntity<?> startQuest(@RequestBody Map<String, Object> request) {
+        int sponsorPlayerIndex = (int) request.get("sponsorPlayerIndex");
+        Player sponsorPlayer = playerList.get(sponsorPlayerIndex);
+        usedCardIndices.clear();
+        stagesForQuest.clear();
+        previousStageValue = 0;
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "Quest intiated for Player" + (sponsorPlayerIndex + 1));
+        response.put("playerHand", sponsorPlayer.getHand().stream().map(Card::toString).collect(Collectors.toList()));
+        return ResponseEntity.ok(response);
+    }
+    @PostMapping("addStage")
+    public ResponseEntity<?> addStage(@RequestBody Map<String, Object> request) {
+        Integer sponsorPlayerIndex = (int) request.get("sponsorPlayerIndex");
+        List<Integer> selectedIndices = (List<Integer>) request.get("selectedIndices");
+        if(sponsorPlayerIndex == null || selectedIndices == null) {
+            return ResponseEntity.badRequest().body("Missed fields");
+        }
+        Player sponsorPlayer = playerList.get(sponsorPlayerIndex);
+        int currentStageValue = selectedIndices.stream().map(index -> sponsorPlayer.getHand().get(index).value).reduce(0, Integer::sum);
+        if(currentStageValue <= previousStageValue) {
+            return ResponseEntity.badRequest().body("Stage value must be greater than previous stage value");
+        }
+        previousStageValue = currentStageValue;
+        usedCardIndices.addAll(selectedIndices);
+        List<Card> stageCards = selectedIndices.stream().map(index -> sponsorPlayer.getHand().get(index)).collect(Collectors.toList());
+        Stage stage = new Stage(stageCards);
+        stagesForQuest.add(stage);
+        return ResponseEntity.ok("Stage added");
+    }
+    @PostMapping("makeQuest")
+    public ResponseEntity<?> makeQuest(@RequestBody Map<String, Object> request) {
+        int sponsorPlayerIndex = (int) request.get("sponsorPlayerIndex");
+        Player sponsorPlayer = playerList.get(sponsorPlayerIndex);
+
+        Quest questPlacholder = new Quest(stagesForQuest, sponsorPlayer, getNonSponsorPlayers(sponsorPlayer));
+        quest = questPlacholder;
+        System.out.println(quest.getActiveParticipants().get(0).numPlayer);
+        System.out.println(quest.getActiveParticipants().get(1).numPlayer);
+        System.out.println(quest.getActiveParticipants().get(2).numPlayer);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "Quest created successfully!");
+        response.put("questStages", stagesForQuest.stream()
+                .map(stage -> stage.getCards().stream().map(Card::toString).collect(Collectors.toList()))
+                .collect(Collectors.toList()));
+        System.out.println(quest);
+        System.out.println(quest.getStages());
+        for(int i =0;i<quest.getStages().size();i++){
+            System.out.println(quest.getStages().get(i).getCards());
+        }
+        return ResponseEntity.ok(response);
+    }
+    @GetMapping("/getQuest")
+    public ResponseEntity<?> getQuest() {
+        System.out.println("It gets to here");
+        System.out.println(quest);
+        System.out.println(quest.getStages());
+        if (quest == null || quest.getStages().isEmpty()) {
+            return ResponseEntity.badRequest().body("No active quest found.");
+        }
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("sponsorPlayer", quest.sponsor != null ? quest.sponsor.toString() : "Unknown");
+        response.put("stages", quest.getStages().stream()
+                .map(stage -> stage.getCards().stream().map(Card::toString).collect(Collectors.toList()))
+                .collect(Collectors.toList()));
+        response.put("participants", quest.getActiveParticipants().stream()
+                .map(Player::toString)
+                .collect(Collectors.toList()));
+
+        return ResponseEntity.ok(response);
+    }
+    public List<Player> getNonSponsorPlayers(Player sponsorPlayer) {
+        return playerList.stream().filter(player -> !player.equals(sponsorPlayer)).collect(Collectors.toList());
+    }
+    @PostMapping("updateParticipation")
+    public String updateParticipation(@RequestBody Map<String, Object> request) {
+        System.out.println(request);
+        int playerIndex = ((Number) request.get("playerIndex")).intValue();
+        int stageIndex = ((Number) request.get("stageIndex")).intValue();
+        String decision = (String) request.get("decision");
+        Player player = playerList.get(playerIndex);
+        quest.promptParticipation(stageIndex,player,decision);
+        return "Participation updated for player " + player.numPlayer;
+    }
+    @PostMapping("/submitAttack")
+    public ResponseEntity<String> submitAttack(@RequestBody Map<String, Object> request) {
+        int playerIndex = (int) request.get("playerIndex");
+        int stageIndex = (int) request.get("stageIndex");
+        List<Integer> selectedCardIndices = (List<Integer>) request.get("selectedCardIndices");
+        Player player = quest.getActiveParticipants().get(playerIndex);
+        Stage currentStage = quest.getStages().get(stageIndex);
+        List<Card> playerHand = player.getHand();
+        List<Card> selectedCards = new ArrayList<>();
+
+        for (int index : selectedCardIndices) {
+            if (index >= 0 && index < playerHand.size()) {
+                selectedCards.add(playerHand.get(index));
+            }
+        }
+        Attack attack = new Attack(player);
+        for (Card card : selectedCards) {
+            attack.addCardToAttack(card);
+        }
+        List<Attack> attacks = new ArrayList<>();
+        attacks.add(attack);
+        List<Player> remainingPlayers = quest.getActiveParticipants();
+        List<Player> playersRemainingAfterStage = quest.resolveStage(currentStage, attacks, remainingPlayers);
+        if (playersRemainingAfterStage.contains(player)) {
+            return ResponseEntity.ok("Attack successful! You move on to the next stage.");
+        } else {
+            return ResponseEntity.ok("Your attack failed. You have been eliminated from this stage.");
+        }
     }
 
 }

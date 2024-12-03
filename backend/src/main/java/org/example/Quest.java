@@ -30,6 +30,15 @@ public class Quest {
         }
         return eligibleParticipants;
     }
+    public List<Player> getActiveParticipants() {
+        List<Player> activeParticipants = new ArrayList<>();
+        for (Player player : participants) {
+            if (!player.equals(sponsor) && !withdrawnParticipants.contains(player)) {
+                activeParticipants.add(player);
+            }
+        }
+        return activeParticipants;
+    }
     public void promptParticipation(int stageIndex, Player player, String action) {
         if (action.equalsIgnoreCase("withdraw")) {
             withdraw(player);
@@ -120,5 +129,6 @@ public class Quest {
         }
         return newRemainingPlayers;
     }
+
 
 }
