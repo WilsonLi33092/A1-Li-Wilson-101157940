@@ -1,5 +1,6 @@
 package org.example;
 
+import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -99,18 +100,20 @@ public class Controller {
         response.put("playerThreeShields", playerThree.getShields());
         response.put("playerFourHand", playerFour.getHand().stream().map(Card::toString).collect(Collectors.toList()));
         response.put("playerFourShields", playerFour.getShields());
+        deck.currentPlayerTurn += 1;
         return response;
 
     }
     @PostMapping("drawQueensFavor")
     public Map<String, Object> drawQueensFavor() {
-        if(deck.getCurrentPlayerTurn() == 1) {
+        System.out.println(deck.getCurrentPlayerTurn()% 4);
+        if((deck.getCurrentPlayerTurn()-1) % 4 == 0) {
             event.drawQueensFavorCard(playerOne.getHand(), deck.adventureDeck);
-        } else if(deck.getCurrentPlayerTurn() == 2) {
+        } else if((deck.getCurrentPlayerTurn()-1) % 4 == 1) {
             event.drawQueensFavorCard(playerTwo.getHand(), deck.adventureDeck);
-        } else if(deck.getCurrentPlayerTurn() == 3) {
+        } else if((deck.getCurrentPlayerTurn()-1) % 4 == 2) {
             event.drawQueensFavorCard(playerThree.getHand(), deck.adventureDeck);
-        } else {
+        } else if((deck.getCurrentPlayerTurn()-1) % 4 == 3){
             event.drawQueensFavorCard(playerFour.getHand(), deck.adventureDeck);
         }
         Map<String, Object> response = new HashMap<>();
@@ -126,19 +129,20 @@ public class Controller {
         response.put("playerThreeShields", playerThree.getShields());
         response.put("playerFourHand", playerFour.getHand().stream().map(Card::toString).collect(Collectors.toList()));
         response.put("playerFourShields", playerFour.getShields());
+        deck.currentPlayerTurn += 1;
         return response;
     }
     @PostMapping("drawPlague")
     public Map<String, Object> drawPlague() {
-        if(deck.getCurrentPlayerTurn() == 1) {
+        if((deck.getCurrentPlayerTurn()-1) % 4 == 0) {
             System.out.println(playerOne.getShields());
             playerOne.setShields(event.drawPlagueCard(playerOne.getShields()));
             System.out.println(playerOne.getShields());
-        } else if(deck.getCurrentPlayerTurn() == 2) {
+        } else if((deck.getCurrentPlayerTurn()-1) % 4 == 1) {
             playerTwo.setShields(event.drawPlagueCard(playerTwo.getShields()));
-        } else if(deck.getCurrentPlayerTurn() == 3) {
+        } else if((deck.getCurrentPlayerTurn()-1) % 4 == 2) {
             playerThree.setShields(event.drawPlagueCard(playerThree.getShields()));
-        } else {
+        } else if((deck.getCurrentPlayerTurn()-1) % 4 == 3){
             playerFour.setShields(event.drawPlagueCard(playerFour.getShields()));
         }
         Map<String, Object> response = new HashMap<>();
@@ -150,6 +154,32 @@ public class Controller {
         response.put("playerThreeShields", playerThree.getShields());
         response.put("playerFourHand", playerFour.getHand().stream().map(Card::toString).collect(Collectors.toList()));
         response.put("playerFourShields", playerFour.getShields());
+        deck.currentPlayerTurn += 1;
+        return response;
+    }
+    @PostMapping("checkTrim")
+    public Map<String, Object> checkTrim() {
+        Map<String, Object> response = new HashMap<>();
+        if(playerOne.getHand().size() > 12) {
+            response.put("playerOne", true);
+            int trimAmountOne = playerOne.getHand().size() - 12;
+            response.put("playerOneAmount", trimAmountOne);
+        }
+        if(playerTwo.getHand().size() > 12) {
+            response.put("playerTwo", true);
+            int trimAmountTwo = playerTwo.getHand().size() - 12;
+            response.put("playerTwoAmount", trimAmountTwo);
+        }
+        if(playerThree.getHand().size() > 12) {
+            response.put("playerThree", true);
+            int trimAmountThree = playerThree.getHand().size() - 12;
+            response.put("playerThreeAmount", trimAmountThree);
+        }
+        if(playerFour.getHand().size() > 12) {
+            response.put("playerFour", true);
+            int trimAmountFour = playerFour.getHand().size() - 12;
+            response.put("playerFourAmount", trimAmountFour);
+        }
         return response;
     }
 
@@ -189,6 +219,25 @@ public class Controller {
         Stage stage = new Stage(stageCards);
         stagesForQuest.add(stage);
         return ResponseEntity.ok("Stage added");
+    }
+    @PostMapping("trimHand")
+    public ResponseEntity<?> trimHand(@RequestBody Map<String, Object> request) {
+        System.out.println("It gets to here");
+        int trimIndex = ((Number) request.get("index")).intValue();
+        if("playerOne".equals(request.get("player"))){
+            playerOne.getHand().remove(trimIndex);
+        }
+        if("playerTwo".equals(request.get("player"))){
+            playerTwo.getHand().remove(trimIndex);
+        }
+        if("playerThree".equals(request.get("player"))){
+            playerThree.getHand().remove(trimIndex);
+        }
+        if("playerFour".equals(request.get("player"))){
+            playerFour.getHand().remove(trimIndex);
+        }
+
+        return ResponseEntity.ok("Hand Trimmed");
     }
     @PostMapping("makeQuest")
     public ResponseEntity<?> makeQuest(@RequestBody Map<String, Object> request) {
@@ -250,8 +299,21 @@ public class Controller {
     public ResponseEntity<String> submitAttack(@RequestBody Map<String, Object> request) {
         int playerIndex = (int) request.get("playerIndex");
         int stageIndex = (int) request.get("stageIndex");
+        placeholder = playerList.get(playerIndex);
         List<Integer> selectedCardIndices = (List<Integer>) request.get("selectedCardIndices");
-        Player player = quest.getActiveParticipants().get(playerIndex);
+        if (stageIndex < 0 || stageIndex >= quest.getStages().size()) {
+            return ResponseEntity.ok("STAGE INDEX OUT OF BOUNDS");
+        }
+        List<Player> activeParticipants = quest.getActiveParticipants();
+        System.out.println("Active Participants: " + activeParticipants.size());
+        for (Player p : activeParticipants) {
+            System.out.println("Player: " + p.numPlayer);  // Assuming Player has a getName() method
+        }
+        //if (playerIndex < 0 || playerIndex >= activeParticipants.size()) {
+        //    return ResponseEntity.ok("PLAYER INDEX OUT OF BOUNDS");
+        //}
+        System.out.println(("Size of quest participants" + quest.getActiveParticipants()));
+        Player player = playerList.get(playerIndex);
         Stage currentStage = quest.getStages().get(stageIndex);
         List<Card> playerHand = player.getHand();
         List<Card> selectedCards = new ArrayList<>();
@@ -268,12 +330,31 @@ public class Controller {
         List<Attack> attacks = new ArrayList<>();
         attacks.add(attack);
         List<Player> remainingPlayers = quest.getActiveParticipants();
+        System.out.println(remainingPlayers);
         List<Player> playersRemainingAfterStage = quest.resolveStage(currentStage, attacks, remainingPlayers);
+        System.out.println(playersRemainingAfterStage);
         if (playersRemainingAfterStage.contains(player)) {
             return ResponseEntity.ok("Attack successful! You move on to the next stage.");
         } else {
             return ResponseEntity.ok("Your attack failed. You have been eliminated from this stage.");
         }
+    }
+    @PostMapping("finishQuest")
+    public Map<String, Object> finishQuest(){
+        Map<String, Object> response = new HashMap<>();
+        playerOne.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
+        playerTwo.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
+        playerThree.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
+        playerFour.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
+        response.put("playerOneHand", playerOne.getHand().stream().map(Card::toString).collect(Collectors.toList()));
+        response.put("playerOneShields", playerOne.getShields());
+        response.put("playerTwoHand", playerTwo.getHand().stream().map(Card::toString).collect(Collectors.toList()));
+        response.put("playerTwoShields", playerTwo.getShields());
+        response.put("playerThreeHand", playerThree.getHand().stream().map(Card::toString).collect(Collectors.toList()));
+        response.put("playerThreeShields", playerThree.getShields());
+        response.put("playerFourHand", playerFour.getHand().stream().map(Card::toString).collect(Collectors.toList()));
+        response.put("playerFourShields", playerFour.getShields());
+        return response;
     }
 
 }

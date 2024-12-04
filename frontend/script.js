@@ -75,10 +75,23 @@
          updateGameDisplay(`Drawn Card: ${result.card}`)
          if (result.card === "Prosperity") {
             await handleProsperity();
+            currentPlayerIndex +=1;
+            if(currentPlayerIndex > 3) {
+                currentPlayerIndex = currentPlayerIndex % 4;
+            }
          } else if (result.card === "Queen's favor") {
             await handleQueensFavor();
+            trimHands();
+            currentPlayerIndex += 1;
+            if(currentPlayerIndex > 3) {
+                currentPlayerIndex = currentPlayerIndex % 4;
+            }
          } else if (result.card === "Plague") {
             await handlePlague();
+            currentPlayerIndex +=1;
+            if(currentPlayerIndex > 3) {
+                currentPlayerIndex = currentPlayerIndex % 4;
+            }
          } else {
             currentPhase = "selectSponsor";
             let card = result.card
@@ -90,7 +103,83 @@
          updateGameDisplay("Error: Failed to draw card")
      }
  }
-
+async function trimHands() {
+    try{
+                    const trim = await fetch(`${apiBaseUrl}/checkTrim`, {method: "POST"});
+                    const trimResult = await trim.json();
+                    console.log(trimResult)
+                    console.log(trimResult.size)
+                    console.log(trimResult.playerOne);
+                    console.log("PLAYER ONE IS ABOVE");
+                    if (trimResult.playerOne) {
+                        console.log("Trimming Player One rn")
+                            for(let j =0; j<trimResult.playerOneAmount;j++) {
+                                appendToGameDisplay(`\n`);
+                                appendToGameDisplay(`Player One, you must trim your hand, choose the index of the card you would like to discard.`);
+                                const userResponse = await getUserInput();
+                                console.log(userResponse);
+                                let trimIndex = parseInt(userResponse, 10);
+                                let playerOne = "playerOne";
+                                await fetch(`${apiBaseUrl}/trimHand`, {method:"POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({index:trimIndex,player:playerOne}),});
+                                const finalTrim = await fetch(`${apiBaseUrl}/finishQuest`, { method: "POST" });
+                                            const trimmedResult = await finalTrim.json();
+                                            console.log("Trim Response:", trimmedResult);
+                                            updatePlayerHands(trimmedResult);
+                            }
+                    }
+                    if (trimResult.playerTwo) {
+                                            console.log("Trimming Player Two rn")
+                                                for(let j =0; j<trimResult.playerTwoAmount;j++) {
+                                                    appendToGameDisplay(`\n`);
+                                                    appendToGameDisplay(`Player Two, you must trim your hand, choose the index of the card you would like to discard.`);
+                                                    const userResponse = await getUserInput();
+                                                    console.log(userResponse);
+                                                    let trimIndex = parseInt(userResponse, 10);
+                                                    let playerTwo = "playerTwo";
+                                                    await fetch(`${apiBaseUrl}/trimHand`, {method:"POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({index:trimIndex,player:playerTwo}),});
+                                                    const finalTrim = await fetch(`${apiBaseUrl}/finishQuest`, { method: "POST" });
+                                                                const trimmedResult = await finalTrim.json();
+                                                                console.log("Trim Response:", trimmedResult);
+                                                                updatePlayerHands(trimmedResult);
+                                                }
+                                        }
+                    if (trimResult.playerThree) {
+                                                                console.log("Trimming Player Three rn")
+                                                                    for(let j =0; j<trimResult.playerThreeAmount;j++) {
+                                                                        appendToGameDisplay(`\n`);
+                                                                        appendToGameDisplay(`Player Three, you must trim your hand, choose the index of the card you would like to discard.`);
+                                                                        const userResponse = await getUserInput();
+                                                                        console.log(userResponse);
+                                                                        let trimIndex = parseInt(userResponse, 10);
+                                                                        let playerThree = "playerThree";
+                                                                        await fetch(`${apiBaseUrl}/trimHand`, {method:"POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({index:trimIndex,player:playerThree}),});
+                                                                        const finalTrim = await fetch(`${apiBaseUrl}/finishQuest`, { method: "POST" });
+                                                                                    const trimmedResult = await finalTrim.json();
+                                                                                    console.log("Trim Response:", trimmedResult);
+                                                                                    updatePlayerHands(trimmedResult);
+                                                                    }
+                                                            }
+                   if (trimResult.playerFour) {
+                                                               console.log("Trimming Player Four rn")
+                                                                   for(let j =0; j<trimResult.playerFourAmount;j++) {
+                                                                       appendToGameDisplay(`\n`);
+                                                                       appendToGameDisplay(`Player Four, you must trim your hand, choose the index of the card you would like to discard.`);
+                                                                       const userResponse = await getUserInput();
+                                                                       console.log(userResponse);
+                                                                       let trimIndex = parseInt(userResponse, 10);
+                                                                       let playerFour = "playerFour";
+                                                                       await fetch(`${apiBaseUrl}/trimHand`, {method:"POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({index:trimIndex,player:playerFour}),});
+                                                                       const finalTrim = await fetch(`${apiBaseUrl}/finishQuest`, { method: "POST" });
+                                                                                   const trimmedResult = await finalTrim.json();
+                                                                                   console.log("Trim Response:", trimmedResult);
+                                                                                   updatePlayerHands(trimmedResult);
+                                                                   }
+                                                           }
+                    appendToGameDisplay(`\n Trimming is done. You may continue`);
+                } catch (error) {
+                    console.error("Error in trimhand", error);
+                }
+}
 function updateGameDisplay(message) {
     const gameDisplay = document.getElementById("game-display");
     gameDisplay.value = message;
@@ -274,6 +363,8 @@ async function handleSponsorship(card) {
 }
 
 async function handleQuestParticipation(quest) {
+    const withdrawnPlayers = new Set();
+    const playerSuccess ={};
     for (let stageIndex = 0; stageIndex < quest.stages.length; stageIndex++) {
         const currentStage = quest.stages[stageIndex];
         appendToGameDisplay(`Stage ${stageIndex + 1}: Do you want to participate in this stage?`);
@@ -282,10 +373,13 @@ async function handleQuestParticipation(quest) {
         console.log(stageIndex);
         for (let i = 0; i < playerList.length; i++) {
             let startPlayerIndex = (startIndex + i) % playerList.length;
-            if (startPlayerIndex === currentPlayerIndex) continue;
+            if (startPlayerIndex === currentPlayerIndex || withdrawnPlayers.has(startPlayerIndex)) continue;
             const player = playerList[startPlayerIndex];
             appendToGameDisplay(`Player ${startPlayerIndex + 1}, do you want to participate in Stage ${stageIndex + 1}? (Continue/Withdraw)`);
             const userResponse = await getUserInput();
+            if (!playerSuccess[startPlayerIndex]) {
+                playerSuccess[startPlayerIndex] = [];
+            }
             console.log(playerList.length);
                         console.log(i);
             if (userResponse.toLowerCase() === "continue") {
@@ -296,25 +390,61 @@ async function handleQuestParticipation(quest) {
                 appendToGameDisplay(`Player ${startPlayerIndex +1} please choose the indices of cards you would like to use for your attack separted by a comma. E.g(3,5)`);
                 const attackResponse = await getUserInput();
                 const indices = attackResponse.split(",").map((index) => parseInt(index.trim())).filter((num) => !isNaN(num));
+                console.log("Submitting attack:", {
+                    playerIndex: startPlayerIndex,
+                    stageIndex: stageIndex,
+                    selectedCardIndices: indices,
+                });
                 const response = await fetch(`${apiBaseUrl}/submitAttack`, {method: 'POST',headers: {'Content-Type': 'application/json'},body: JSON.stringify({playerIndex: startPlayerIndex,stageIndex: stageIndex,selectedCardIndices: indices})});
                                 if (response.ok) {
                                     const result = await response.text();
                                     appendToGameDisplay(result);
-
                                     if (result.includes("failed")) {
-                                        await updateParticipation(startPlayerIndex, stageIndex, "withdraw");
+                                        console.log(result);
+                                        withdrawnPlayers.add(startPlayerIndex);
+                                        appendToGameDisplay(result);
+                                        playerSuccess[startPlayerIndex][stageIndex] = false;
+
+                                        //await updateParticipation(startPlayerIndex, stageIndex, "withdraw");
+                                    } else {
+                                        playerSuccess[startPlayerIndex][stageIndex] = true;
                                     }
+                                }else {
+                                    console.log("THIS IS WHERE IT FAIL")
+                                    playerSuccess[startPlayerIndex][stageIndex] = false;
                                 }
             } else if(userResponse.toLowerCase() === "withdraw"){
                 appendToGameDisplay(`Player ${startPlayerIndex + 1} has chosen not to participate in Stage ${stageIndex + 1}.`);
+                withdrawnPlayers.add(startPlayerIndex);
+                playerSuccess[startPlayerIndex][stageIndex] = false;
                 await updateParticipation(startPlayerIndex, stageIndex, "withdraw");
             }
 
         }
 
     }
+    const winningPlayers = [];
+        for (let playerIndex in playerSuccess) {
+            if (playerSuccess[playerIndex].every(success => success === true)) {
+                winningPlayers.push(`Player ${parseInt(playerIndex) + 1}`);
+            }
+        }
 
-    appendToGameDisplay("All players have decided whether to participate in the stages.");
+        appendToGameDisplay(`The players who won the quest are: ${winningPlayers.join(', ')}`);
+        appendToGameDisplay("All players have decided whether to participate in the stages.");
+    try {
+            const response = await fetch(`${apiBaseUrl}/finishQuest`, { method: "POST" });
+            const result = await response.json();
+            console.log("FinishQuest Response:", result);
+            updatePlayerHands(result);
+            document.getElementById("event-message").innerText =
+                "Event: Quest Finished! Shields awarded to the winning players!";
+
+        } catch (error) {
+            console.error("Error in finishQuest:", error);
+            updateGameDisplay("Error: Failed to handle finished quest event.");
+        }
+
 }
 function getStageNumber(card) {
     const questMatch = card.match(/^Quest (\d+)$/);
