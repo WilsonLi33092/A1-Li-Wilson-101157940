@@ -79,7 +79,12 @@ public class Controller {
         System.out.println("Player one shields" + playerOne.getShields());
         return response;
     }
-
+    @PostMapping("/nextPlayerTurn")
+    public ResponseEntity<?> nextPlayerTurn() {
+        //currentPlayerTurn = (currentPlayerTurn % playerList.size()) + 1;
+        deck.currentPlayerTurn =(deck.currentPlayerTurn % 4) + 1;
+        return ResponseEntity.ok("Next Player Turn");
+    }
     @PostMapping("/draw")
     public Map<String, String> drawCard() {
         String newCard = deck.drawEventCard();
@@ -104,7 +109,8 @@ public class Controller {
         response.put("playerThreeShields", playerThree.getShields());
         response.put("playerFourHand", playerFour.getHand().stream().map(Card::toString).collect(Collectors.toList()));
         response.put("playerFourShields", playerFour.getShields());
-        deck.currentPlayerTurn += 1;
+        //deck.currentPlayerTurn += 1;
+        deck.currentPlayerTurn =(deck.currentPlayerTurn % 4) + 1;
         return response;
 
     }
@@ -133,7 +139,8 @@ public class Controller {
         response.put("playerThreeShields", playerThree.getShields());
         response.put("playerFourHand", playerFour.getHand().stream().map(Card::toString).collect(Collectors.toList()));
         response.put("playerFourShields", playerFour.getShields());
-        deck.currentPlayerTurn += 1;
+        //deck.currentPlayerTurn += 1;
+        deck.currentPlayerTurn =(deck.currentPlayerTurn % 4) + 1;
         return response;
     }
     @PostMapping("drawPlague")
@@ -158,7 +165,7 @@ public class Controller {
         response.put("playerThreeShields", playerThree.getShields());
         response.put("playerFourHand", playerFour.getHand().stream().map(Card::toString).collect(Collectors.toList()));
         response.put("playerFourShields", playerFour.getShields());
-        deck.currentPlayerTurn += 1;
+        deck.currentPlayerTurn =(deck.currentPlayerTurn % 4) + 1;
         return response;
     }
     @PostMapping("checkTrim")
@@ -380,6 +387,30 @@ public class Controller {
 
         return ResponseEntity.ok("Used sponsor indices");
     }
+    @PostMapping("useAttackIndices")
+    public ResponseEntity<?> useAttackIndices(@RequestBody Map<String, Object> request) {
+        int sponsorPlayerIndex = (int) request.get("player");
+        List<?> rawIndices = (List<?>) request.get("indices");
+        List<Integer> indices = rawIndices.stream()
+                .map(index -> ((Number) index).intValue())
+                .toList();
+        System.out.println("THIS IS THE PLAYER");
+        System.out.println(sponsorPlayerIndex);
+        for(int index : indices) {
+            if(sponsorPlayerIndex % 4 == 0){
+                System.out.println("IT IS HERE WOOOOOOOOO");
+                playerOne.hand.remove(index);
+            }else if (sponsorPlayerIndex % 4== 1) {
+                playerTwo.hand.remove(index);
+            }else if (sponsorPlayerIndex % 4== 2) {
+                playerThree.hand.remove(index);
+            }else if(sponsorPlayerIndex % 4== 3){
+                playerFour.hand.remove(index);
+            }
+        }
+
+        return ResponseEntity.ok("Used sponsor indices");
+    }
     @PostMapping("/submitAttack")
     public ResponseEntity<String> submitAttack(@RequestBody Map<String, Object> request) {
         int playerIndex = (int) request.get("playerIndex");
@@ -406,6 +437,7 @@ public class Controller {
         for (int index : selectedCardIndices) {
             if (index >= 0 && index < playerHand.size()) {
                 selectedCards.add(playerHand.get(index));
+                System.out.println(selectedCards);
             }
         }
         Attack attack = new Attack(player);
@@ -418,6 +450,11 @@ public class Controller {
         System.out.println(remainingPlayers);
         List<Player> playersRemainingAfterStage = quest.resolveStage(currentStage, attacks, remainingPlayers);
         System.out.println(playersRemainingAfterStage);
+        for(Card card: selectedCards){
+            player.hand.remove(card);
+            System.out.println(player.hand.toString());
+
+        }
         if (playersRemainingAfterStage.contains(player)) {
             return ResponseEntity.ok("Attack successful! You move on to the next stage.");
         } else {

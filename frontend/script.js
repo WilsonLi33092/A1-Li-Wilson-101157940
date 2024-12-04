@@ -6,6 +6,7 @@
  let lastCardDrawn = null;
  let firstAskedIndex = null;
  let winnerList = [];
+ let otherPhase = "otherPhase";
 
 
 
@@ -19,13 +20,13 @@
         } else {
             return;
         }
-     } else if (currentPhase === "buildQuest") {
-
      }
-     inputField.value = "";
+     //inputField.value = "";
  }
  async function determineSponsorResponse(response) {
     console.log("In determineSponsor")
+    const inputField = document.getElementById("user-input");
+    inputField.value = "";
      if (response === "yes") {
          appendToGameDisplay(`Player ${currentPlayerIndex + 1} has chosen to sponsor ${lastCardDrawn}`);
          await handleSponsorship(lastCardDrawn);
@@ -37,13 +38,11 @@
          currentPlayerIndex = (currentPlayerIndex + 1) % playerList.length;
          if (currentPlayerIndex === firstAskedIndex) {
              appendToGameDisplay("All players have declined to sponsor the quest. The quest is not sponsored.");
-             currentPhase = "startedGame";
+             //currentPhase = "startedGame";
+             await fetch(`${apiBaseUrl}/nextPlayerTurn`, { method: "POST" });
              firstAskedIndex = null;
-             //currentPlayerIndex = (currentPlayerIndex + 1) % playerList.length;
+             currentPlayerIndex = (currentPlayerIndex + 1) % playerList.length;
              updateTurnDisplay(currentPlayerIndex + 1);
-             //            if(currentPlayerIndex > 3) {
-             //                currentPlayerIndex = currentPlayerIndex % 4;
-             //            }
          } else {
              const nextPlayer = playerList[currentPlayerIndex];
              const lastCard = lastCardDrawn;
@@ -57,7 +56,6 @@
          if (!response.ok) {
              throw new Error('Failed to start the game');
          }
-
          const result = await response.json();
          console.log("API Response:", result);
                   console.log("Player Hands:", result.playerOneHand, result.playerTwoHand, result.playerThreeHand, result.playerFourHand);
@@ -87,24 +85,24 @@
          updateGameDisplay(`Drawn Card: ${result.card}`)
          if (result.card === "Prosperity") {
             await handleProsperity();
-            trimHands();
-            currentPlayerIndex +=1;
-            if(currentPlayerIndex > 3) {
-                currentPlayerIndex = currentPlayerIndex % 4;
-            }
+            await trimHands();
+            currentPlayerIndex = (currentPlayerIndex + 1) % playerList.length;
+            updateTurnDisplay(currentPlayerIndex + 1)
+
          } else if (result.card === "Queen's favor") {
-            await handleQueensFavor();
-            trimHands();
-            currentPlayerIndex += 1;
-            if(currentPlayerIndex > 3) {
-                currentPlayerIndex = currentPlayerIndex % 4;
+            if(currentPhase != "startedGame"){
+                currentPhase = "startedGame";
             }
+            await handleQueensFavor();
+            await trimHands();
+            currentPlayerIndex = (currentPlayerIndex + 1) % playerList.length;
+            updateTurnDisplay(currentPlayerIndex + 1)
+
          } else if (result.card === "Plague") {
             await handlePlague();
-            currentPlayerIndex +=1;
-            if(currentPlayerIndex > 3) {
-                currentPlayerIndex = currentPlayerIndex % 4;
-            }
+            currentPlayerIndex = (currentPlayerIndex + 1) % playerList.length;
+            updateTurnDisplay(currentPlayerIndex + 1)
+
          } else {
             currentPhase = "selectSponsor";
             let card = result.card
@@ -133,6 +131,8 @@ async function trimHands() {
                                 console.log(userResponse);
                                 let trimIndex = parseInt(userResponse, 10);
                                 let playerOne = "playerOne";
+                                console.log("Trim Index:", trimIndex);
+                                console.log("Player One:", playerOne);
                                 await fetch(`${apiBaseUrl}/trimHand`, {method:"POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({index:trimIndex,player:playerOne}),});
                                 const finalTrim = await fetch(`${apiBaseUrl}/finishQuest`, { method: "POST" });
                                             const trimmedResult = await finalTrim.json();
@@ -149,6 +149,8 @@ async function trimHands() {
                                                     console.log(userResponse);
                                                     let trimIndex = parseInt(userResponse, 10);
                                                     let playerTwo = "playerTwo";
+                                                    console.log("Trim Index:", trimIndex);
+                                                    console.log("Player Two:", playerTwo);
                                                     await fetch(`${apiBaseUrl}/trimHand`, {method:"POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({index:trimIndex,player:playerTwo}),});
                                                     const finalTrim = await fetch(`${apiBaseUrl}/finishQuest`, { method: "POST" });
                                                                 const trimmedResult = await finalTrim.json();
@@ -165,6 +167,8 @@ async function trimHands() {
                                                                         console.log(userResponse);
                                                                         let trimIndex = parseInt(userResponse, 10);
                                                                         let playerThree = "playerThree";
+                                                                        console.log("Trim Index:", trimIndex);
+                                                                        console.log("Player Three:", playerThree);
                                                                         await fetch(`${apiBaseUrl}/trimHand`, {method:"POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({index:trimIndex,player:playerThree}),});
                                                                         const finalTrim = await fetch(`${apiBaseUrl}/finishQuest`, { method: "POST" });
                                                                                     const trimmedResult = await finalTrim.json();
@@ -181,6 +185,8 @@ async function trimHands() {
                                                                        console.log(userResponse);
                                                                        let trimIndex = parseInt(userResponse, 10);
                                                                        let playerFour = "playerFour";
+                                                                       console.log("Trim Index:", trimIndex);
+                                                                       console.log("Player Four:", playerFour);
                                                                        await fetch(`${apiBaseUrl}/trimHand`, {method:"POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({index:trimIndex,player:playerFour}),});
                                                                        const finalTrim = await fetch(`${apiBaseUrl}/finishQuest`, { method: "POST" });
                                                                                    const trimmedResult = await finalTrim.json();
@@ -283,11 +289,9 @@ async function determineSponsor(card) {
     if (!sponsorFound) {
         appendToGameDisplay("All players have declined to sponsor the quest. The quest is not sponsored.");
         currentPhase = "startedGame";
-        updateTurnDisplay(currentPlayerIndex + 1);
-        currentPlayerIndex += 1;
-        if(currentPlayerIndex > 3) {
-            currentPlayerIndex = currentPlayerIndex % 4;
-        }
+        await fetch(`${apiBaseUrl}/nextPlayerTurn`, { method: "POST" });
+        currentPlayerIndex = (currentPlayerIndex + 1) % playerList.length;
+        updateTurnDisplay(currentPlayerIndex + 1)
     }
 }
 
@@ -313,6 +317,7 @@ async function handleSponsorship(card, player) {
     appendToGameDisplay(`Sponsorship for ${card} has been processed.`);
     let playerIndexPlaceholder = 0;
     let selectedSponsorIndices = [];
+    let selectedAttackIndices = [];
     for(let i =0; i<playerList.length;i++){
         if(player === playerList[i]){
             playerIndexPlaceholder = i;
@@ -408,13 +413,13 @@ async function handleSponsorship(card, player) {
     let allIndices = selectedSponsorIndices.flat();
     await fetch(`${apiBaseUrl}/useSponsorIndices`, {method: "POST", headers: {"Content-Type": "application/json"},body: JSON.stringify({indices:allIndices, player: currentPlayerIndex}),});
     const updateHandResponse = await fetch(`${apiBaseUrl}/finishQuest`, { method: "POST" });
-                                const handResult = await updateHandResponse.json();
-                                console.log("FinishQuest Response:", handResult);
-                                updatePlayerHands(handResult);
-    currentPlayerIndex +=1;
-                if(currentPlayerIndex > 3) {
-                    currentPlayerIndex = currentPlayerIndex % 4;
-                }
+    const handResult = await updateHandResponse.json();
+    console.log("FinishQuest Response:", handResult);
+    await fetch(`${apiBaseUrl}/nextPlayerTurn`, { method: "POST" });
+    updatePlayerHands(handResult);
+    currentPlayerIndex = (currentPlayerIndex + 1) % playerList.length;
+    updateTurnDisplay(currentPlayerIndex + 1);
+
     }catch(error) {
         console.erroor("Error making quest")
     }
@@ -471,29 +476,38 @@ async function handleQuestParticipation(quest) {
                 appendToGameDisplay(`Player ${startPlayerIndex +1} please choose the indices of cards you would like to use for your attack separted by a comma. E.g(3,5)`);
                 const attackResponse = await getUserInput();
                 const indices = attackResponse.split(",").map((index) => parseInt(index.trim())).filter((num) => !isNaN(num));
+                //selectedAttackIndices.push(indices);
+                //let allAttackIndices = selectedAttackIndices.flat();
                 console.log("Submitting attack:", {
                     playerIndex: startPlayerIndex,
                     stageIndex: stageIndex,
                     selectedCardIndices: indices,
                 });
                 const response = await fetch(`${apiBaseUrl}/submitAttack`, {method: 'POST',headers: {'Content-Type': 'application/json'},body: JSON.stringify({playerIndex: startPlayerIndex,stageIndex: stageIndex,selectedCardIndices: indices})});
-                                if (response.ok) {
-                                    const result = await response.text();
-                                    appendToGameDisplay(result);
-                                    if (result.includes("failed")) {
-                                        console.log(result);
-                                        withdrawnPlayers.add(startPlayerIndex);
-                                        appendToGameDisplay(result);
-                                        playerSuccess[startPlayerIndex][stageIndex] = false;
-
-                                        //await updateParticipation(startPlayerIndex, stageIndex, "withdraw");
-                                    } else {
-                                        playerSuccess[startPlayerIndex][stageIndex] = true;
-                                    }
-                                }else {
-                                    console.log("THIS IS WHERE IT FAIL")
-                                    playerSuccess[startPlayerIndex][stageIndex] = false;
-                                }
+                    if (response.ok) {
+                        const result = await response.text();
+                        appendToGameDisplay(result);
+                        if (result.includes("failed")) {
+                            console.log(result);
+                            withdrawnPlayers.add(startPlayerIndex);
+                            appendToGameDisplay(result);
+                            playerSuccess[startPlayerIndex][stageIndex] = false;
+                            //await updateParticipation(startPlayerIndex, stageIndex, "withdraw");
+                        } else {
+                            playerSuccess[startPlayerIndex][stageIndex] = true;
+                        }
+                        //await fetch(`${apiBaseUrl}/useAttackIndices`, {method: "POST", headers: {"Content-Type": "application/json"},body: JSON.stringify({indices:allAttackIndices, player: startPlayerIndex}),});
+                        //const updateHandResponse = await fetch(`${apiBaseUrl}/finishQuest`, { method: "POST" });
+                        //const handResult = await updateHandResponse.json();
+                        //selectedAttackIndices.length = 0;
+                    }else {
+                        console.log("THIS IS WHERE IT FAIL")
+                        playerSuccess[startPlayerIndex][stageIndex] = false;
+                    }
+                /////UPDATE HANDS
+                const updateHandAttackResponse = await fetch(`${apiBaseUrl}/finishQuest`, { method: "POST" });
+                const handAttackResult = await updateHandAttackResponse.json();
+                updatePlayerHands(handAttackResult)
             } else if(userResponse.toLowerCase() === "withdraw"){
                 appendToGameDisplay(`Player ${startPlayerIndex + 1} has chosen not to participate in Stage ${stageIndex + 1}.`);
                 withdrawnPlayers.add(startPlayerIndex);
@@ -518,8 +532,7 @@ async function handleQuestParticipation(quest) {
             const result = await response.json();
             console.log("FinishQuest Response:", result);
             updatePlayerHands(result);
-            document.getElementById("event-message").innerText =
-                "Event: Quest Finished! Shields awarded to the winning players!";
+            document.getElementById("event-message").innerText ="Event: Quest Finished! Shields awarded to the winning players!";
 
         } catch (error) {
             console.error("Error in finishQuest:", error);
@@ -535,12 +548,15 @@ function getStageNumber(card) {
     }
     return null;
 }
-function getUserInput() {
+async function getUserInput() {
     return new Promise((resolve) => {
         const inputField = document.getElementById("user-input");
         const submitButton = document.getElementById("submit-command");
+        console.log("Input Field Exists:", inputField !== null);
+        console.log("Submit Button Exists:", submitButton !== null);
         const handleInput = () => {
          const inputValue = inputField.value.trim()
+         console.log("Raw input value", inputValue);
          inputField.value = "";
          submitButton.removeEventListener("click", handleInput);
          resolve(inputValue);
