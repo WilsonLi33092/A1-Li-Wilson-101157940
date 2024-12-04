@@ -32,6 +32,10 @@
              appendToGameDisplay("All players have declined to sponsor the quest. The quest is not sponsored.");
              currentPhase = "startedGame";
              updateTurnDisplay(currentPlayerIndex + 1);
+             currentPlayerIndex +=1;
+                         if(currentPlayerIndex > 3) {
+                             currentPlayerIndex = currentPlayerIndex % 4;
+                         }
          } else {
              const nextPlayer = playerList[currentPlayerIndex];
              const lastCard = lastCardDrawn;
@@ -260,7 +264,7 @@ async function determineSponsor(card) {
         if (response.toLowerCase() === "yes") {
             sponsorFound = true;
             appendToGameDisplay(`Player ${player + 1} has chosen to sponsor the quest card: ${card}`);
-            handleSponsorship(card);
+            handleSponsorship(card,player);
         } else {
             appendToGameDisplay(`Player ${player + 1} has declined to sponsor the quest.`);
             playerIndex = (playerIndex + 1) % playerList.length;
@@ -292,10 +296,19 @@ function askPlayerForSponsorship(card) {
     });
 }
 
-async function handleSponsorship(card) {
+async function handleSponsorship(card, player) {
     appendToGameDisplay(`Sponsorship for ${card} has been processed.`);
+    let playerIndexPlaceholder = 0;
+    let selectedSponsorIndices = [];
+    for(let i =0; i<playerList.length;i++){
+        if(player === playerList[i]){
+            playerIndexPlaceholder = i;
+        }
+    }
+    console.log("HANDLE SPONSOR")
+    console.log(currentPlayerIndex);
     try{
-        const response = await fetch (`${apiBaseUrl}/startQuest`, {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({sponsorPlayerIndex: currentPlayerIndex}), });
+        const response = await fetch (`${apiBaseUrl}/startQuest`, {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({sponsorPlayerIndex: playerIndexPlaceholder}), });
         if(!response.ok){
             const errorMessage = await response.text();
             throw new Error("Failed to make quest");
@@ -315,6 +328,9 @@ async function handleSponsorship(card) {
             i--;
             continue;
         }
+        selectedSponsorIndices.push(indices);
+        console.log("SELECTED SPONSOR INDICES");
+        console.log(selectedSponsorIndices);
         try {
             const addStageResponse = await fetch(`${apiBaseUrl}/addStage`, {method:"POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({
                     sponsorPlayerIndex:currentPlayerIndex,selectedIndices: indices,}),});
@@ -335,6 +351,8 @@ async function handleSponsorship(card) {
         console.log(`Processing stage ${i + 1} of ${stageNumbers}`);
         console.log(`Selected indices for stage ${i + 1}:`, indices)
     }
+    console.log("HANDLE SPONSOR 2")
+    console.log(currentPlayerIndex);
     try {
         const makeResponse = await fetch(`${apiBaseUrl}/makeQuest`, {method:"POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({
                     sponsorPlayerIndex:currentPlayerIndex}),});
@@ -352,13 +370,27 @@ async function handleSponsorship(card) {
             } else {
                 console.error("failed to fetch quest");
             }
-
+    console.log("HANDLE SPONSOR 3")
+    console.log(currentPlayerIndex);
+    appendToGameDisplay(`The quest has finished and the sponsor player ${currentPlayerIndex + 1} is discarding cards and drawing cards`);
+    let allIndices = selectedSponsorIndices.flat();
+    await fetch(`${apiBaseUrl}/useSponsorIndices`, {method: "POST", headers: {"Content-Type": "application/json"},body: JSON.stringify({indices:allIndices, player: currentPlayerIndex}),});
+    const updateHandResponse = await fetch(`${apiBaseUrl}/finishQuest`, { method: "POST" });
+                                const handResult = await updateHandResponse.json();
+                                console.log("FinishQuest Response:", handResult);
+                                updatePlayerHands(handResult);
+    currentPlayerIndex +=1;
+                if(currentPlayerIndex > 3) {
+                    currentPlayerIndex = currentPlayerIndex % 4;
+                }
     }catch(error) {
         console.erroor("Error making quest")
     }
     } catch (error) {
         console.error("Error during quest sponsorship");
     }
+
+
 
 }
 
@@ -384,6 +416,23 @@ async function handleQuestParticipation(quest) {
                         console.log(i);
             if (userResponse.toLowerCase() === "continue") {
                 appendToGameDisplay(`Player ${startPlayerIndex + 1} has chosen to participate in Stage ${stageIndex + 1}.`);
+                let placeholder = "";
+                if(startPlayerIndex === 0){
+                    placeholder = "playerOne";
+                } else if(startPlayerIndex === 1) {
+                    placeholder = "playerTwo";
+                } else if(startPlayerIndex === 2) {
+                    placeholder = "playerThree";
+                } else if(startPlayerIndex === 3) {
+                    placeholder = "playerFour"
+                }
+                appendToGameDisplay(`Player ${startPlayerIndex + 1} has drawn a card`);
+                await fetch(`${apiBaseUrl}/drawAdventureCard`, {method:"POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({player:placeholder}),});
+                const updateHandResponse = await fetch(`${apiBaseUrl}/finishQuest`, { method: "POST" });
+                            const handResult = await updateHandResponse.json();
+                            console.log("FinishQuest Response:", handResult);
+                            updatePlayerHands(handResult);
+                await trimHands();
                 console.log(`start player index ${startPlayerIndex}`);
                 console.log(stageIndex);
                 await updateParticipation(startPlayerIndex, stageIndex, "continue");
@@ -444,6 +493,7 @@ async function handleQuestParticipation(quest) {
             console.error("Error in finishQuest:", error);
             updateGameDisplay("Error: Failed to handle finished quest event.");
         }
+
 
 }
 function getStageNumber(card) {

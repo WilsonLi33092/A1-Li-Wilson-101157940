@@ -236,8 +236,32 @@ public class Controller {
         if("playerFour".equals(request.get("player"))){
             playerFour.getHand().remove(trimIndex);
         }
-
+        playerOne.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
+        playerTwo.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
+        playerThree.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
+        playerFour.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
         return ResponseEntity.ok("Hand Trimmed");
+    }
+    @PostMapping("drawAdventureCard")
+    public ResponseEntity<?> drawAdventureCard(@RequestBody Map<String, Object> request){
+        Card drawnCard = deck.drawCard();
+        if("playerOne".equals(request.get("player"))){
+            playerOne.hand.add(drawnCard);
+        }
+        if("playerTwo".equals(request.get("player"))){
+            playerTwo.hand.add(drawnCard);
+        }
+        if("playerThree".equals(request.get("player"))){
+            playerThree.hand.add(drawnCard);
+        }
+        if("playerFour".equals(request.get("player"))){
+            playerFour.hand.add(drawnCard);
+        }
+        playerOne.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
+        playerTwo.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
+        playerThree.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
+        playerFour.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
+        return ResponseEntity.ok("Card Drawn");
     }
     @PostMapping("makeQuest")
     public ResponseEntity<?> makeQuest(@RequestBody Map<String, Object> request) {
@@ -294,6 +318,38 @@ public class Controller {
         Player player = playerList.get(playerIndex);
         quest.promptParticipation(stageIndex,player,decision);
         return "Participation updated for player " + player.numPlayer;
+    }
+    @PostMapping("useSponsorIndices")
+    public ResponseEntity<?> useSponsorIndices(@RequestBody Map<String, Object> request) {
+        int sponsorPlayerIndex = (int) request.get("player");
+        List<?> rawIndices = (List<?>) request.get("indices");
+        List<Integer> indices = rawIndices.stream()
+                .map(index -> ((Number) index).intValue())
+                .toList();
+        System.out.println("THIS IS THE PLAYER");
+        System.out.println(sponsorPlayerIndex);
+        for(int index : indices) {
+            if(sponsorPlayerIndex % 4 == 0){
+                System.out.println("IT IS HERE WOOOOOOOOO");
+                playerOne.hand.remove(index);
+                Card drawnCard = deck.drawCard();
+                playerOne.hand.add(drawnCard);
+            }else if (sponsorPlayerIndex % 4== 1) {
+                playerTwo.hand.remove(index);
+                Card drawnCard = deck.drawCard();
+                playerTwo.hand.add(drawnCard);
+            }else if (sponsorPlayerIndex % 4== 2) {
+                playerThree.hand.remove(index);
+                Card drawnCard = deck.drawCard();
+                playerThree.hand.add(drawnCard);
+            }else if(sponsorPlayerIndex % 4== 3){
+                playerFour.hand.remove(index);
+                Card drawnCard = deck.drawCard();
+                playerFour.hand.add(drawnCard);
+            }
+        }
+
+        return ResponseEntity.ok("Used sponsor indices");
     }
     @PostMapping("/submitAttack")
     public ResponseEntity<String> submitAttack(@RequestBody Map<String, Object> request) {
