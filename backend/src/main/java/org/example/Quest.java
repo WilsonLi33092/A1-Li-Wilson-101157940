@@ -124,7 +124,10 @@ public class Quest {
         newRemainingPlayers.removeAll(eliminatedPlayers);
         if(stages.getLast().equals(stage)) {
             for(Player winner : newRemainingPlayers) {
-                winner.shields += stages.size();
+                if(!winner.gotShields()){
+                    winner.shields += stages.size();
+                    winner.markGotShields();
+                }
             }
         }
         return newRemainingPlayers;

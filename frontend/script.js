@@ -4,6 +4,9 @@
  let currentPlayerIndex = 0;
  let isSponsoring = false
  let lastCardDrawn = null;
+ let firstAskedIndex = null;
+ let winnerList = [];
+
 
 
  async function processUserInput() {
@@ -26,16 +29,21 @@
      if (response === "yes") {
          appendToGameDisplay(`Player ${currentPlayerIndex + 1} has chosen to sponsor ${lastCardDrawn}`);
          await handleSponsorship(lastCardDrawn);
+         firstAskedIndex = null;
      } else {
+        if(firstAskedIndex === null) {
+            firstAskedIndex = currentPlayerIndex;
+        }
          currentPlayerIndex = (currentPlayerIndex + 1) % playerList.length;
-         if (currentPlayerIndex === 0) {
+         if (currentPlayerIndex === firstAskedIndex) {
              appendToGameDisplay("All players have declined to sponsor the quest. The quest is not sponsored.");
              currentPhase = "startedGame";
+             firstAskedIndex = null;
+             //currentPlayerIndex = (currentPlayerIndex + 1) % playerList.length;
              updateTurnDisplay(currentPlayerIndex + 1);
-             currentPlayerIndex +=1;
-                         if(currentPlayerIndex > 3) {
-                             currentPlayerIndex = currentPlayerIndex % 4;
-                         }
+             //            if(currentPlayerIndex > 3) {
+             //                currentPlayerIndex = currentPlayerIndex % 4;
+             //            }
          } else {
              const nextPlayer = playerList[currentPlayerIndex];
              const lastCard = lastCardDrawn;
@@ -79,6 +87,7 @@
          updateGameDisplay(`Drawn Card: ${result.card}`)
          if (result.card === "Prosperity") {
             await handleProsperity();
+            trimHands();
             currentPlayerIndex +=1;
             if(currentPlayerIndex > 3) {
                 currentPlayerIndex = currentPlayerIndex % 4;
@@ -275,6 +284,10 @@ async function determineSponsor(card) {
         appendToGameDisplay("All players have declined to sponsor the quest. The quest is not sponsored.");
         currentPhase = "startedGame";
         updateTurnDisplay(currentPlayerIndex + 1);
+        currentPlayerIndex += 1;
+        if(currentPlayerIndex > 3) {
+            currentPlayerIndex = currentPlayerIndex % 4;
+        }
     }
 }
 
@@ -372,6 +385,25 @@ async function handleSponsorship(card, player) {
             }
     console.log("HANDLE SPONSOR 3")
     console.log(currentPlayerIndex);
+    const checkForWinners = await fetch(`${apiBaseUrl}/checkWinners`, {method: "POST"});
+    const checkWinnersJson = await checkForWinners.json();
+    if(checkWinnersJson.playerOne || checkWinnersJson.playerTwo || checkWinnersJson.playerThree || checkWinnersJson.playerFour) {
+        if(checkWinnersJson.playerOne){
+            winnerList.push(1);
+        }
+        if(checkWinnersJson.playerTwo){
+            winnerList.push(2);
+        }
+        if(checkWinnersJson.playerThree){
+            winnerList.push(3);
+        }
+        if(checkWinnersJson.playerFour){
+            winnerList.push(4)
+        }
+        for(let i =0; i<winnerList.length;i++) {
+            appendToGameDisplay(`\n Player ${winnerList[i]} has won the game. Congratulations.`);
+        }
+    }
     appendToGameDisplay(`The quest has finished and the sponsor player ${currentPlayerIndex + 1} is discarding cards and drawing cards`);
     let allIndices = selectedSponsorIndices.flat();
     await fetch(`${apiBaseUrl}/useSponsorIndices`, {method: "POST", headers: {"Content-Type": "application/json"},body: JSON.stringify({indices:allIndices, player: currentPlayerIndex}),});

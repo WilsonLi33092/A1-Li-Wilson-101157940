@@ -7,6 +7,7 @@ class Player {
     ArrayList<Card> hand;
     int shields = 0;
     int numPlayer = 0;
+    public boolean gotShieldPrize = false;
     public void setHand(ArrayList<Card> newHand) {
         hand = newHand;
     }
@@ -49,4 +50,11 @@ class Player {
         }
         return winners;
     }
+    public boolean gotShields(){
+        return gotShieldPrize;
+    }
+    public void markGotShields(){
+        gotShieldPrize = true;
+    }
+
 }

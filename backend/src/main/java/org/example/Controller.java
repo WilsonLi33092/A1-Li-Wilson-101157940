@@ -25,6 +25,7 @@ public class Controller {
     ArrayList<Stage> stagesForQuest = new ArrayList<>();
     int previousStageValue = 0;
     Quest quest = new Quest(new ArrayList<>(), null, new ArrayList<>());
+    ArrayList<Player> winners = new ArrayList<>();
 
     int currentPlayerIndex = 0;
     private List<String> playerDecisions = new ArrayList<>(Collections.nCopies(4, "N"));
@@ -55,7 +56,10 @@ public class Controller {
         playerTwo.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
         playerThree.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
         playerFour.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
-        playerOne.shields = 2;
+        playerOne.shields = 6;
+        playerTwo.shields = 6;
+        playerThree.shields = 6;
+        playerFour.shields = 6;
 
         Map<String, Object> response = new HashMap<>();
         response.put("currentTurn", currentPlayerTurn);
@@ -200,6 +204,31 @@ public class Controller {
         response.put("message", "Quest intiated for Player" + (sponsorPlayerIndex + 1));
         response.put("playerHand", sponsorPlayer.getHand().stream().map(Card::toString).collect(Collectors.toList()));
         return ResponseEntity.ok(response);
+    }
+    @PostMapping("checkWinners")
+    public Map<String, Object> checkWinners(){
+        Map<String, Object> response = new HashMap<>();
+        if(playerOne.shields >= 7) {
+            response.put("playerOne", true);
+        } else {
+            response.put("playerOne", false);
+        }
+        if(playerTwo.shields >= 7) {
+            response.put("playerTwo", true);
+        }else {
+            response.put("playerTwo", false);
+        }
+        if(playerThree.shields >= 7) {
+            response.put("playerThree", true);
+        } else {
+            response.put("playerThree", false);
+        }
+        if(playerFour.shields >= 7) {
+            response.put("playerFour", true);
+        } else {
+            response.put("playerFour", false);
+        }
+        return response;
     }
     @PostMapping("addStage")
     public ResponseEntity<?> addStage(@RequestBody Map<String, Object> request) {
