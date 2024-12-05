@@ -203,11 +203,11 @@ await inputField.sendKeys("0");
         await driver.sleep(1000);
         await submitButton.click();
         await driver.sleep(1000);
-        await inputField.sendKeys("1,9");
+        await inputField.sendKeys("1,8");
         await driver.sleep(1000);
         await submitButton.click();
         await driver.sleep(1000);
-        await inputField.sendKeys("6,10");
+        await inputField.sendKeys("5,9");
         await driver.sleep(1000);
         await submitButton.click();
         await driver.sleep(1000);
@@ -298,5 +298,89 @@ await inputField.sendKeys("0");
     }
     console.assert("", "");
 }
+async function runRiggedDeck0Winner() {
+    let driver = await new Builder().forBrowser('chrome').build();
 
-runRiggedDeck1Winner();
+    try {
+        await driver.get('http://127.0.0.1:8081');
+        await driver.sleep(1000);
+        let startButton = await driver.findElement(By.xpath("//button[contains(text(), 'RiggedDeck0W')]"));
+        await startButton.click();
+        await driver.sleep(1000);
+        let drawButton = await driver.findElement(By.xpath("//button[contains(text(), 'RiggedDrawCard')]"));
+        await drawButton.click();
+        await driver.sleep(1000);
+        let inputField = await driver.findElement(By.xpath("//input[@placeholder='Enter command here...']"));
+        await inputField.sendKeys("yes");
+        await driver.sleep(1000);
+        let submitButton = await driver.findElement(By.xpath("//button[contains(text(), 'Submit')]"));
+        await submitButton.click();
+        await driver.sleep(1000);
+        await inputField.sendKeys("0,2,4,6,8,10");
+        await driver.sleep(1000);
+        await submitButton.click();
+        await driver.sleep(1000);
+        await inputField.sendKeys("1,3,5,7,9,11");
+        await driver.sleep(1000);
+        await submitButton.click();
+        await driver.sleep(1000);
+        await inputField.sendKeys("continue");
+        await driver.sleep(1000);
+        await submitButton.click();
+        await driver.sleep(1000);
+        await inputField.sendKeys("0");
+        await driver.sleep(1000);
+        await submitButton.click();
+        await driver.sleep(1000);
+        await inputField.sendKeys("11");
+        await driver.sleep(1000);
+        await submitButton.click();
+        await driver.sleep(1000);
+        await inputField.sendKeys("continue");
+        await driver.sleep(1000);
+        await submitButton.click();
+        await driver.sleep(1000);
+        await inputField.sendKeys("3");
+        await driver.sleep(1000);
+        await submitButton.click();
+        await driver.sleep(1000);
+        await submitButton.click();
+        await driver.sleep(1000);
+        await inputField.sendKeys("continue");
+        await driver.sleep(1000);
+        await submitButton.click();
+        await driver.sleep(1000);
+        await inputField.sendKeys("2");
+        await driver.sleep(1000);
+        await submitButton.click();
+        await driver.sleep(1000);
+        await submitButton.click();
+        await driver.sleep(1000);
+        await inputField.sendKeys("0");
+        await driver.sleep(1000);
+        await submitButton.click();
+        await driver.sleep(1000);
+        await inputField.sendKeys("0");
+        await driver.sleep(1000);
+        await submitButton.click();
+        await driver.sleep(10000);
+    } catch (error) {
+        console.error("Test encountered an error:", error);
+    } finally {
+        await driver.quit();
+    }
+    console.assert("", "");
+}
+async function runAllTests() {
+    let driver = await new Builder().forBrowser('chrome').build();
+    try {
+        await runRiggedDeck1Winner(driver);
+        await runRiggedDeck0Winner(driver);
+    } catch (error) {
+        console.error("Error running tests:", error);
+    } finally {
+        await driver.quit();
+    }
+}
+
+runAllTests();

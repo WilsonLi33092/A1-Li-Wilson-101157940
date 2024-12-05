@@ -121,6 +121,48 @@ public class Controller {
         System.out.println("Player one shields" + playerOne.getShields());
         return response;
     }
+    @GetMapping("/startRiggedDeck0winner")
+    public Map<String, Object> startRiggedDeck0Winner() {
+        rigDeck0Winner();
+        playerOne.setNumPlayer(1);
+        playerTwo.setNumPlayer(2);
+        playerThree.setNumPlayer(3);
+        playerFour.setNumPlayer(4);
+        int currentPlayerTurn = deck.getCurrentPlayerTurn();
+
+        String eventCard = deck.drawEventCard();
+        //playerOne.setHand(deck.player1Hand);
+        //playerTwo.setHand(deck.player2Hand);
+        //playerThree.setHand(deck.player3Hand);
+        //playerFour.setHand(deck.player4Hand);
+
+        playerOne.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
+        playerTwo.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
+        playerThree.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
+        playerFour.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
+        playerOne.shields = 0;
+        playerTwo.shields = 0;
+        playerThree.shields = 0;
+        playerFour.shields = 0;
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("currentTurn", currentPlayerTurn);
+        response.put("message", "Game started.");
+        response.put("playerOneHand", playerOne.getHand().stream().map(Card::toString).collect(Collectors.toList()));
+        response.put("playerOneShields", playerOne.getShields());
+        response.put("playerTwoHand", playerTwo.getHand().stream().map(Card::toString).collect(Collectors.toList()));
+        response.put("playerTwoShields", playerTwo.getShields());
+        response.put("playerThreeHand", playerThree.getHand().stream().map(Card::toString).collect(Collectors.toList()));
+        response.put("playerThreeShields", playerThree.getShields());
+        response.put("playerFourHand", playerFour.getHand().stream().map(Card::toString).collect(Collectors.toList()));
+        response.put("playerFourShields", playerFour.getShields());
+        System.out.println("Player One Hand: " + playerOne.getHand());
+        System.out.println("Player Two Hand: " + playerTwo.getHand());
+        System.out.println("Player Three Hand: " + playerThree.getHand());
+        System.out.println("Player Four Hand: " + playerFour.getHand());
+        System.out.println("Player one shields" + playerOne.getShields());
+        return response;
+    }
     @PostMapping("/nextPlayerTurn")
     public ResponseEntity<?> nextPlayerTurn() {
         //currentPlayerTurn = (currentPlayerTurn % playerList.size()) + 1;
@@ -1025,25 +1067,36 @@ public class Controller {
                 .toList();
         System.out.println("THIS IS THE PLAYER");
         System.out.println(sponsorPlayerIndex);
+        ArrayList<Card> placeholder = new ArrayList<>();
         for(int index : indices) {
             if(sponsorPlayerIndex % 4 == 0){
-                System.out.println("IT IS HERE WOOOOOOOOO");
-                playerOne.hand.remove(index);
+                placeholder.add(playerOne.getHand().get(index));
+            }else if (sponsorPlayerIndex % 4== 1) {
+                placeholder.add(playerTwo.getHand().get(index));
+            }else if (sponsorPlayerIndex % 4== 2) {
+                placeholder.add(playerThree.getHand().get(index));
+            }else if(sponsorPlayerIndex % 4== 3){
+                placeholder.add(playerFour.getHand().get(index));
+            }
+        }
+        for(Card removeCard : placeholder) {
+            if(sponsorPlayerIndex % 4 == 0){
+                playerOne.hand.remove(removeCard);
                 Card drawnCard = deck.drawCard();
                 playerOne.hand.add(drawnCard);
-                playerOne.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
+                playerTwo.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
             }else if (sponsorPlayerIndex % 4== 1) {
-                playerTwo.hand.remove(index);
+                playerTwo.hand.remove(removeCard);
                 Card drawnCard = deck.drawCard();
                 playerTwo.hand.add(drawnCard);
                 playerTwo.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
             }else if (sponsorPlayerIndex % 4== 2) {
-                playerThree.hand.remove(index);
+                playerThree.hand.remove(removeCard);
                 Card drawnCard = deck.drawCard();
                 playerThree.hand.add(drawnCard);
                 playerThree.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
             }else if(sponsorPlayerIndex % 4== 3){
-                playerFour.hand.remove(index);
+                playerFour.hand.remove(removeCard);
                 Card drawnCard = deck.drawCard();
                 playerFour.hand.add(drawnCard);
                 playerFour.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
@@ -1059,25 +1112,39 @@ public class Controller {
         List<Integer> indices = rawIndices.stream()
                 .map(index -> ((Number) index).intValue())
                 .toList();
+        ArrayList<Card> placeholder = new ArrayList<>();
         for(int index : indices) {
-            System.out.println(index);
             if(sponsorPlayerIndex % 4 == 0){
-                playerOne.hand.remove(index);
-                Card drawnCard = deck.drawRiggedCard();
-
-                playerOne.hand.add(drawnCard);
+                placeholder.add(playerOne.getHand().get(index));
             }else if (sponsorPlayerIndex % 4== 1) {
-                playerTwo.hand.remove(index);
+                placeholder.add(playerTwo.getHand().get(index));
+            }else if (sponsorPlayerIndex % 4== 2) {
+                placeholder.add(playerThree.getHand().get(index));
+            }else if(sponsorPlayerIndex % 4== 3){
+                placeholder.add(playerFour.getHand().get(index));
+            }
+        }
+        for(Card removeCard : placeholder) {
+            if(sponsorPlayerIndex % 4 == 0){
+                playerOne.hand.remove(removeCard);
+                Card drawnCard = deck.drawRiggedCard();
+                playerOne.hand.add(drawnCard);
+                playerTwo.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
+            }else if (sponsorPlayerIndex % 4== 1) {
+                playerTwo.hand.remove(removeCard);
                 Card drawnCard = deck.drawRiggedCard();
                 playerTwo.hand.add(drawnCard);
+                playerTwo.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
             }else if (sponsorPlayerIndex % 4== 2) {
-                playerThree.hand.remove(index);
+                playerThree.hand.remove(removeCard);
                 Card drawnCard = deck.drawRiggedCard();
                 playerThree.hand.add(drawnCard);
+                playerThree.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
             }else if(sponsorPlayerIndex % 4== 3){
-                playerFour.hand.remove(index);
+                playerFour.hand.remove(removeCard);
                 Card drawnCard = deck.drawRiggedCard();
                 playerFour.hand.add(drawnCard);
+                playerFour.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
             }
         }
 
