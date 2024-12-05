@@ -22,6 +22,15 @@ public class EventCard {
         }
         return playerHand;
     }
+    public ArrayList<Card> drawRiggedQueensFavorCard(ArrayList<Card> playerHand, ArrayList<Card> adventureDeck) {
+
+        for(int i =0; i< 2; i++) {
+            Card randCard = adventureDeck.get(0);
+            playerHand.add(randCard);
+            adventureDeck.remove(0);
+        }
+        return playerHand;
+    }
     public void drawProsperity(ArrayList<Card> playerOneHand, ArrayList<Card> playerTwoHand, ArrayList<Card> playerThreeHand, ArrayList<Card> playerFourHand, ArrayList<Card> adventureDeck) {
         Random drawCard = new Random();
         for(int i =0; i<8;i++) {
@@ -44,5 +53,24 @@ public class EventCard {
                 adventureDeck.remove(randInx);
             }
         }
+    }
+    public void drawRiggedProsperity(ArrayList<Card> playerOneHand, ArrayList<Card> playerTwoHand, ArrayList<Card> playerThreeHand, ArrayList<Card> playerFourHand, ArrayList<Card> adventureDeck) {
+
+        playerOneHand.add(adventureDeck.get(0));
+        adventureDeck.remove(0);
+        playerOneHand.add(adventureDeck.get(0));
+        adventureDeck.remove(0);
+        playerTwoHand.add(adventureDeck.get(0));
+        adventureDeck.remove(0);
+        playerTwoHand.add(adventureDeck.get(0));
+        adventureDeck.remove(0);
+        playerThreeHand.add(adventureDeck.get(0));
+        adventureDeck.remove(0);
+        playerThreeHand.add(adventureDeck.get(0));
+        adventureDeck.remove(0);
+        playerFourHand.add(adventureDeck.get(0));
+        adventureDeck.remove(0);
+        playerFourHand.add(adventureDeck.get(0));
+        adventureDeck.remove(0);
     }
 }

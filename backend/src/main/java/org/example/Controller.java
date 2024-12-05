@@ -79,9 +79,9 @@ public class Controller {
         System.out.println("Player one shields" + playerOne.getShields());
         return response;
     }
-    @GetMapping("/startRiggedDeck1")
-    public Map<String, Object> startGameRiggedDeck1() {
-        rigDeck1();
+    @GetMapping("/startRiggedDeck1winner")
+    public Map<String, Object> startRiggedDeck1Winner() {
+        rigDeck1Winner();
         playerOne.setNumPlayer(1);
         playerTwo.setNumPlayer(2);
         playerThree.setNumPlayer(3);
@@ -89,19 +89,19 @@ public class Controller {
         int currentPlayerTurn = deck.getCurrentPlayerTurn();
 
         String eventCard = deck.drawEventCard();
-        playerOne.setHand(deck.player1Hand);
-        playerTwo.setHand(deck.player2Hand);
-        playerThree.setHand(deck.player3Hand);
-        playerFour.setHand(deck.player4Hand);
+        //playerOne.setHand(deck.player1Hand);
+        //playerTwo.setHand(deck.player2Hand);
+        //playerThree.setHand(deck.player3Hand);
+        //playerFour.setHand(deck.player4Hand);
 
         playerOne.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
         playerTwo.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
         playerThree.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
         playerFour.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
-        playerOne.shields = 6;
-        playerTwo.shields = 6;
-        playerThree.shields = 6;
-        playerFour.shields = 6;
+        playerOne.shields = 0;
+        playerTwo.shields = 0;
+        playerThree.shields = 0;
+        playerFour.shields = 0;
 
         Map<String, Object> response = new HashMap<>();
         response.put("currentTurn", currentPlayerTurn);
@@ -135,9 +135,39 @@ public class Controller {
         response.put("card", newCard);
         return response;
     }
+    @PostMapping("/riggedDrawCard")
+    public Map<String, String> riggedDrawCard() {
+        String newCard = deck.drawRiggedEventCard();
+        deck.eventDeck.remove(0);
+
+        Map<String, String> response = new HashMap<>();
+        response.put("card", newCard);
+        return response;
+    }
     @PostMapping("drawProsperity")
     public Map<String, Object> drawPropserity() {
         event.drawProsperity(playerOne.getHand(),playerTwo.getHand(),playerThree.getHand(),playerFour.getHand(),deck.adventureDeck);
+        Map<String, Object> response = new HashMap<>();
+        playerOne.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
+        playerTwo.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
+        playerThree.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
+        playerFour.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
+        response.put("playerOneHand", playerOne.getHand().stream().map(Card::toString).collect(Collectors.toList()));
+        response.put("playerOneShields", playerOne.getShields());
+        response.put("playerTwoHand", playerTwo.getHand().stream().map(Card::toString).collect(Collectors.toList()));
+        response.put("playerTwoShields", playerTwo.getShields());
+        response.put("playerThreeHand", playerThree.getHand().stream().map(Card::toString).collect(Collectors.toList()));
+        response.put("playerThreeShields", playerThree.getShields());
+        response.put("playerFourHand", playerFour.getHand().stream().map(Card::toString).collect(Collectors.toList()));
+        response.put("playerFourShields", playerFour.getShields());
+        //deck.currentPlayerTurn += 1;
+        deck.currentPlayerTurn =(deck.currentPlayerTurn % 4) + 1;
+        return response;
+
+    }
+    @PostMapping("drawRiggedProsperity")
+    public Map<String, Object> drawRiggedPropserity() {
+        event.drawRiggedProsperity(playerOne.getHand(),playerTwo.getHand(),playerThree.getHand(),playerFour.getHand(),deck.adventureDeck);
         Map<String, Object> response = new HashMap<>();
         playerOne.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
         playerTwo.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
@@ -185,6 +215,35 @@ public class Controller {
         deck.currentPlayerTurn =(deck.currentPlayerTurn % 4) + 1;
         return response;
     }
+    @PostMapping("drawRiggedQueensFavor")
+    public Map<String, Object> drawRiggedQueensFavor() {
+        System.out.println(deck.getCurrentPlayerTurn()% 4);
+        if((deck.getCurrentPlayerTurn()-1) % 4 == 0) {
+            event.drawRiggedQueensFavorCard(playerOne.getHand(), deck.adventureDeck);
+        } else if((deck.getCurrentPlayerTurn()-1) % 4 == 1) {
+            event.drawRiggedQueensFavorCard(playerTwo.getHand(), deck.adventureDeck);
+        } else if((deck.getCurrentPlayerTurn()-1) % 4 == 2) {
+            event.drawRiggedQueensFavorCard(playerThree.getHand(), deck.adventureDeck);
+        } else if((deck.getCurrentPlayerTurn()-1) % 4 == 3){
+            event.drawRiggedQueensFavorCard(playerFour.getHand(), deck.adventureDeck);
+        }
+        Map<String, Object> response = new HashMap<>();
+        playerOne.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
+        playerTwo.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
+        playerThree.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
+        playerFour.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
+        response.put("playerOneHand", playerOne.getHand().stream().map(Card::toString).collect(Collectors.toList()));
+        response.put("playerOneShields", playerOne.getShields());
+        response.put("playerTwoHand", playerTwo.getHand().stream().map(Card::toString).collect(Collectors.toList()));
+        response.put("playerTwoShields", playerTwo.getShields());
+        response.put("playerThreeHand", playerThree.getHand().stream().map(Card::toString).collect(Collectors.toList()));
+        response.put("playerThreeShields", playerThree.getShields());
+        response.put("playerFourHand", playerFour.getHand().stream().map(Card::toString).collect(Collectors.toList()));
+        response.put("playerFourShields", playerFour.getShields());
+        //deck.currentPlayerTurn += 1;
+        deck.currentPlayerTurn =(deck.currentPlayerTurn % 4) + 1;
+        return response;
+    }
     @PostMapping("drawPlague")
     public Map<String, Object> drawPlague() {
         if((deck.getCurrentPlayerTurn()-1) % 4 == 0) {
@@ -213,6 +272,10 @@ public class Controller {
     @PostMapping("checkTrim")
     public Map<String, Object> checkTrim() {
         Map<String, Object> response = new HashMap<>();
+        playerOne.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
+        playerTwo.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
+        playerThree.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
+        playerFour.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
         if(playerOne.getHand().size() > 12) {
             response.put("playerOne", true);
             int trimAmountOne = playerOne.getHand().size() - 12;
@@ -242,7 +305,7 @@ public class Controller {
         deck.intializeAdventureDeck();
         deck.dealPlayersHands();
     }
-    private void rigDeck1() {
+    private void rigDeck2Winner() {
         deck = new Decks();
         deck.intializeAdventureDeck();
         deck.intializeEventDeck();
@@ -262,6 +325,170 @@ public class Controller {
         cardFoe15.setSortValue(3);
         Card cardFoe20 = new Card();
         cardFoe20.setValue(20);
+        cardFoe20.setType("Foe");
+        cardFoe20.setSortValue(4);
+        Card cardFoe25 = new Card();
+        cardFoe25.setValue(25);
+        cardFoe25.setType("Foe");
+        cardFoe25.setSortValue(5);
+        Card cardFoe30 = new Card();
+        cardFoe30.setValue(30);
+        cardFoe30.setType("Foe");
+        cardFoe30.setSortValue(6);
+        Card cardFoe35 = new Card();
+        cardFoe35.setType("Foe");
+        cardFoe35.value = 35;
+        cardFoe35.sortValue = 7;
+        Card cardFoe40 = new Card();
+        cardFoe40.setType("Foe");
+        cardFoe40.value = 40;
+        cardFoe40.sortValue = 8;
+        Card cardFoe50 = new Card();
+        cardFoe50.setType("Foe");
+        cardFoe50.value = 50;
+        cardFoe50.sortValue = 9;
+        Card cardFoe70 = new Card();
+        cardFoe70.setType("Foe");
+        cardFoe70.value = 70;
+        cardFoe70.sortValue = 10;
+        Card cardDagger = new Card();
+        cardDagger.type = "Dagger";
+        cardDagger.value = 5;
+        cardDagger.sortValue = 11;
+        Card cardSword = new Card();
+        cardSword.type = "Sword";
+        cardSword.value = 10;
+        cardSword.sortValue = 12;
+        Card cardHorse = new Card();
+        cardHorse.type = "Horse";
+        cardHorse.value = 10;
+        cardHorse.sortValue = 13;
+        Card cardBattleAxe = new Card();
+        cardBattleAxe.type = "Battle-Axe";
+        cardBattleAxe.value = 15;
+        cardBattleAxe.sortValue = 14;
+        Card cardLance = new Card();
+        cardLance.type = "Lance";
+        cardLance.value = 20;
+        cardLance.sortValue = 15;
+        Card cardEx = new Card();
+        cardEx.type = "Excalibur";
+        cardEx.value = 50;
+        cardEx.sortValue = 16;
+        ArrayList<Card> riggedPlayer1Hand = new ArrayList<>();
+        ArrayList<Card> riggedPlayer2Hand = new ArrayList<>();
+        ArrayList<Card> riggedPlayer3Hand = new ArrayList<>();
+        ArrayList<Card> riggedPlayer4Hand = new ArrayList<>();
+        riggedPlayer1Hand.add(cardFoe5);
+        riggedPlayer1Hand.add(cardFoe5);
+        riggedPlayer1Hand.add(cardFoe10);
+        riggedPlayer1Hand.add(cardFoe10);
+        riggedPlayer1Hand.add(cardFoe15);
+        riggedPlayer1Hand.add(cardFoe15);
+        riggedPlayer1Hand.add(cardDagger);
+        riggedPlayer1Hand.add(cardHorse);
+        riggedPlayer1Hand.add(cardHorse);
+        riggedPlayer1Hand.add(cardBattleAxe);
+        riggedPlayer1Hand.add(cardBattleAxe);
+        riggedPlayer1Hand.add(cardLance);
+        playerOne.setHand(riggedPlayer1Hand);
+        riggedPlayer2Hand.add(cardFoe40);
+        riggedPlayer2Hand.add(cardFoe50);
+        riggedPlayer2Hand.add(cardHorse);
+        riggedPlayer2Hand.add(cardHorse);
+        riggedPlayer2Hand.add(cardSword);
+        riggedPlayer2Hand.add(cardSword);
+        riggedPlayer2Hand.add(cardSword);
+        riggedPlayer2Hand.add(cardBattleAxe);
+        riggedPlayer2Hand.add(cardBattleAxe);
+        riggedPlayer2Hand.add(cardLance);
+        riggedPlayer2Hand.add(cardLance);
+        riggedPlayer2Hand.add(cardEx);
+        playerTwo.setHand(riggedPlayer2Hand);
+        riggedPlayer3Hand.add(cardFoe5);
+        riggedPlayer3Hand.add(cardFoe5);
+        riggedPlayer3Hand.add(cardFoe5);
+        riggedPlayer3Hand.add(cardFoe5);
+        riggedPlayer3Hand.add(cardDagger);
+        riggedPlayer3Hand.add(cardDagger);
+        riggedPlayer3Hand.add(cardDagger);
+        riggedPlayer3Hand.add(cardHorse);
+        riggedPlayer3Hand.add(cardHorse);
+        riggedPlayer3Hand.add(cardHorse);
+        riggedPlayer3Hand.add(cardHorse);
+        riggedPlayer3Hand.add(cardHorse);
+        playerThree.setHand(riggedPlayer3Hand);
+        riggedPlayer4Hand.add(cardFoe50);
+        riggedPlayer4Hand.add(cardFoe70);
+        riggedPlayer4Hand.add(cardHorse);
+        riggedPlayer4Hand.add(cardHorse);
+        riggedPlayer4Hand.add(cardSword);
+        riggedPlayer4Hand.add(cardSword);
+        riggedPlayer4Hand.add(cardSword);
+        riggedPlayer4Hand.add(cardBattleAxe);
+        riggedPlayer4Hand.add(cardBattleAxe);
+        riggedPlayer4Hand.add(cardLance);
+        riggedPlayer4Hand.add(cardLance);
+        riggedPlayer4Hand.add(cardEx);
+        playerFour.setHand(riggedPlayer4Hand);
+        deck.getAdventureDeck().set(0, cardFoe5);
+        deck.getAdventureDeck().set(1,cardFoe40);
+        deck.getAdventureDeck().set(2,cardFoe10);
+        deck.getAdventureDeck().set(3,cardFoe10);
+        deck.getAdventureDeck().set(4,cardFoe30);
+        deck.getAdventureDeck().set(5, cardFoe30);
+        deck.getAdventureDeck().set(6, cardFoe15);
+        deck.getAdventureDeck().set(7,cardFoe15);
+        deck.getAdventureDeck().set(8,cardFoe20);
+        deck.getAdventureDeck().set(9,cardFoe5);
+        deck.getAdventureDeck().set(10,cardFoe10);
+        deck.getAdventureDeck().set(11,cardFoe15);
+        deck.getAdventureDeck().set(12,cardFoe15);
+        deck.getAdventureDeck().set(13,cardFoe20);
+        deck.getAdventureDeck().set(14,cardFoe20);
+        deck.getAdventureDeck().set(15,cardFoe20);
+        deck.getAdventureDeck().set(16,cardFoe20);
+        deck.eventDeck.set(0,("Quest 4"));
+        deck.eventDeck.set(1, "Quest 3");
+        deck.getAdventureDeck().set(17,cardFoe25);
+        deck.getAdventureDeck().set(18,cardFoe25);
+        deck.getAdventureDeck().set(19,cardFoe30);
+        deck.getAdventureDeck().set(20,cardDagger);
+        deck.getAdventureDeck().set(21,cardDagger);
+        deck.getAdventureDeck().set(22,cardFoe15);
+        deck.getAdventureDeck().set(23,cardFoe15);
+        deck.getAdventureDeck().set(24,cardFoe25);
+        deck.getAdventureDeck().set(25,cardFoe25);
+        deck.getAdventureDeck().set(26, cardFoe20);
+        deck.getAdventureDeck().set(27,cardFoe20);
+        deck.getAdventureDeck().set(28,cardFoe25);
+        deck.getAdventureDeck().set(29,cardFoe30);
+        deck.getAdventureDeck().set(30,cardSword);
+        deck.getAdventureDeck().set(31,cardBattleAxe);
+        deck.getAdventureDeck().set(32,cardBattleAxe);
+        deck.getAdventureDeck().set(33,cardLance);
+    }
+    private void rigDeck1Winner() {
+        deck = new Decks();
+        deck.intializeAdventureDeck();
+        deck.intializeEventDeck();
+        deck.intializeAdventureDeck();
+        deck.dealPlayersHands();
+        Card cardFoe5 = new Card();
+        cardFoe5.setType("Foe");
+        cardFoe5.setValue(5);
+        cardFoe5.setSortValue(1);
+        Card cardFoe10 = new Card();
+        cardFoe10.setValue(10);
+        cardFoe10.setType("Foe");
+        cardFoe10.setSortValue(2);
+        Card cardFoe15 = new Card();
+        cardFoe15.setValue(15);
+        cardFoe15.setType("Foe");
+        cardFoe15.setSortValue(3);
+        Card cardFoe20 = new Card();
+        cardFoe20.setValue(20);
+        cardFoe20.setType("Foe");
         cardFoe20.setSortValue(4);
         Card cardFoe25 = new Card();
         cardFoe25.setValue(25);
@@ -376,11 +603,201 @@ public class Controller {
         deck.getAdventureDeck().set(6, cardFoe5);
         deck.getAdventureDeck().set(7,cardFoe10);
         deck.getAdventureDeck().set(8,cardFoe20);
+        deck.getAdventureDeck().set(9,cardFoe5);
+        deck.getAdventureDeck().set(10,cardFoe10);
+        deck.getAdventureDeck().set(11,cardFoe20);
+        deck.getAdventureDeck().set(12,cardFoe5);
+        deck.getAdventureDeck().set(13,cardFoe5);
+        deck.getAdventureDeck().set(14,cardFoe10);
+        deck.getAdventureDeck().set(15,cardFoe10);
+        deck.getAdventureDeck().set(16,cardFoe15);
+        deck.eventDeck.set(0,("Quest 4"));
+        deck.eventDeck.set(1, "Plague");
+        deck.eventDeck.set(2, "Prosperity");
+        deck.getAdventureDeck().set(17,cardFoe15);
+        deck.getAdventureDeck().set(18,cardFoe15);
+        deck.getAdventureDeck().set(19,cardFoe15);
+        deck.getAdventureDeck().set(20,cardFoe25);
+        deck.getAdventureDeck().set(21,cardFoe25);
+        deck.getAdventureDeck().set(22,cardHorse);
+        deck.getAdventureDeck().set(23,cardSword);
+        deck.getAdventureDeck().set(24,cardBattleAxe);
+        deck.eventDeck.set(3, "Queen's favor");
+        deck.eventDeck.set(4, "Quest 3");
+        deck.getAdventureDeck().set(25,cardFoe40);
+        deck.getAdventureDeck().set(26, cardDagger);
+        deck.getAdventureDeck().set(27,cardDagger);
+        deck.getAdventureDeck().set(28,cardFoe30);
+        deck.getAdventureDeck().set(29,cardFoe25);
+        deck.getAdventureDeck().set(30,cardBattleAxe);
+        deck.getAdventureDeck().set(31,cardHorse);
+        deck.getAdventureDeck().set(32,cardFoe50);
+        deck.getAdventureDeck().set(33,cardSword);
+        deck.getAdventureDeck().set(34,cardSword);
+        deck.getAdventureDeck().set(35, cardFoe40);
+        deck.getAdventureDeck().set(36, cardFoe50);
+        deck.getAdventureDeck().set(37,cardHorse);
+        deck.getAdventureDeck().set(38,cardHorse);
+        deck.getAdventureDeck().set(39,cardHorse);
+        deck.getAdventureDeck().set(40,cardSword);
+        deck.getAdventureDeck().set(41,cardSword);
+        deck.getAdventureDeck().set(42,cardSword);
+        deck.getAdventureDeck().set(43,cardSword);
+        deck.getAdventureDeck().set(44,cardFoe35);
+    }
+    private void rigDeck0Winner() {
+        deck = new Decks();
+        deck.intializeAdventureDeck();
+        deck.intializeEventDeck();
+        deck.intializeAdventureDeck();
+        deck.dealPlayersHands();
+        Card cardFoe5 = new Card();
+        cardFoe5.setType("Foe");
+        cardFoe5.setValue(5);
+        cardFoe5.setSortValue(1);
+        Card cardFoe10 = new Card();
+        cardFoe10.setValue(10);
+        cardFoe10.setType("Foe");
+        cardFoe10.setSortValue(2);
+        Card cardFoe15 = new Card();
+        cardFoe15.setValue(15);
+        cardFoe15.setType("Foe");
+        cardFoe15.setSortValue(3);
+        Card cardFoe20 = new Card();
+        cardFoe20.setValue(20);
+        cardFoe20.setType("Foe");
+        cardFoe20.setSortValue(4);
+        Card cardFoe25 = new Card();
+        cardFoe25.setValue(25);
+        cardFoe25.setType("Foe");
+        cardFoe25.setSortValue(5);
+        Card cardFoe30 = new Card();
+        cardFoe30.setValue(30);
+        cardFoe30.setType("Foe");
+        cardFoe30.setSortValue(6);
+        Card cardFoe35 = new Card();
+        cardFoe35.setType("Foe");
+        cardFoe35.value = 35;
+        cardFoe35.sortValue = 7;
+        Card cardFoe40 = new Card();
+        cardFoe40.setType("Foe");
+        cardFoe40.value = 40;
+        cardFoe40.sortValue = 8;
+        Card cardFoe50 = new Card();
+        cardFoe50.setType("Foe");
+        cardFoe50.value = 50;
+        cardFoe50.sortValue = 9;
+        Card cardFoe70 = new Card();
+        cardFoe70.setType("Foe");
+        cardFoe70.value = 70;
+        cardFoe70.sortValue = 10;
+        Card cardDagger = new Card();
+        cardDagger.type = "Dagger";
+        cardDagger.value = 5;
+        cardDagger.sortValue = 11;
+        Card cardSword = new Card();
+        cardSword.type = "Sword";
+        cardSword.value = 10;
+        cardSword.sortValue = 12;
+        Card cardHorse = new Card();
+        cardHorse.type = "Horse";
+        cardHorse.value = 10;
+        cardHorse.sortValue = 13;
+        Card cardBattleAxe = new Card();
+        cardBattleAxe.type = "Battle-Axe";
+        cardBattleAxe.value = 15;
+        cardBattleAxe.sortValue = 14;
+        Card cardLance = new Card();
+        cardLance.type = "Lance";
+        cardLance.value = 20;
+        cardLance.sortValue = 15;
+        Card cardEx = new Card();
+        cardEx.type = "Excalibur";
+        cardEx.value = 50;
+        cardEx.sortValue = 16;
+        ArrayList<Card> riggedPlayer1Hand = new ArrayList<>();
+        ArrayList<Card> riggedPlayer2Hand = new ArrayList<>();
+        ArrayList<Card> riggedPlayer3Hand = new ArrayList<>();
+        ArrayList<Card> riggedPlayer4Hand = new ArrayList<>();
+        riggedPlayer1Hand.add(cardFoe50);
+        riggedPlayer1Hand.add(cardFoe70);
+        riggedPlayer1Hand.add(cardDagger);
+        riggedPlayer1Hand.add(cardDagger);
+        riggedPlayer1Hand.add(cardHorse);
+        riggedPlayer1Hand.add(cardHorse);
+        riggedPlayer1Hand.add(cardSword);
+        riggedPlayer1Hand.add(cardSword);
+        riggedPlayer1Hand.add(cardBattleAxe);
+        riggedPlayer1Hand.add(cardBattleAxe);
+        riggedPlayer1Hand.add(cardLance);
+        riggedPlayer1Hand.add(cardLance);
+        playerOne.setHand(riggedPlayer1Hand);
+        riggedPlayer2Hand.add(cardFoe5);
+        riggedPlayer2Hand.add(cardFoe5);
+        riggedPlayer2Hand.add(cardFoe10);
+        riggedPlayer2Hand.add(cardFoe15);
+        riggedPlayer2Hand.add(cardFoe15);
+        riggedPlayer2Hand.add(cardFoe20);
+        riggedPlayer2Hand.add(cardFoe20);
+        riggedPlayer2Hand.add(cardFoe25);
+        riggedPlayer2Hand.add(cardFoe30);
+        riggedPlayer2Hand.add(cardFoe30);
+        riggedPlayer2Hand.add(cardFoe40);
+        riggedPlayer2Hand.add(cardEx);
+        playerTwo.setHand(riggedPlayer2Hand);
+        riggedPlayer3Hand.add(cardFoe5);
+        riggedPlayer3Hand.add(cardFoe5);
+        riggedPlayer3Hand.add(cardFoe10);
+        riggedPlayer3Hand.add(cardFoe15);
+        riggedPlayer3Hand.add(cardFoe15);
+        riggedPlayer3Hand.add(cardFoe20);
+        riggedPlayer3Hand.add(cardFoe20);
+        riggedPlayer3Hand.add(cardFoe25);
+        riggedPlayer3Hand.add(cardFoe25);
+        riggedPlayer3Hand.add(cardFoe30);
+        riggedPlayer3Hand.add(cardFoe40);
+        riggedPlayer3Hand.add(cardLance);
+        playerThree.setHand(riggedPlayer3Hand);
+        riggedPlayer4Hand.add(cardFoe5);
+        riggedPlayer4Hand.add(cardFoe5);
+        riggedPlayer4Hand.add(cardFoe10);
+        riggedPlayer4Hand.add(cardFoe15);
+        riggedPlayer4Hand.add(cardFoe15);
+        riggedPlayer4Hand.add(cardFoe20);
+        riggedPlayer4Hand.add(cardFoe20);
+        riggedPlayer4Hand.add(cardFoe25);
+        riggedPlayer4Hand.add(cardFoe25);
+        riggedPlayer4Hand.add(cardFoe30);
+        riggedPlayer4Hand.add(cardFoe50);
+        riggedPlayer4Hand.add(cardEx);
+        playerFour.setHand(riggedPlayer4Hand);
+        deck.getAdventureDeck().set(0, cardFoe5);
+        deck.getAdventureDeck().set(1,cardFoe15);
+        deck.getAdventureDeck().set(2,cardFoe10);
+        deck.getAdventureDeck().set(3,cardFoe5);
+        deck.getAdventureDeck().set(4,cardFoe10);
+        deck.getAdventureDeck().set(5, cardFoe15);
+        deck.getAdventureDeck().set(6, cardDagger);
+        deck.getAdventureDeck().set(7,cardDagger);
+        deck.getAdventureDeck().set(8,cardDagger);
+        deck.getAdventureDeck().set(9,cardDagger);
+        deck.getAdventureDeck().set(10,cardHorse);
+        deck.getAdventureDeck().set(11,cardHorse);
+        deck.getAdventureDeck().set(12,cardHorse);
+        deck.getAdventureDeck().set(13,cardHorse);
+        deck.getAdventureDeck().set(14,cardSword);
+        deck.getAdventureDeck().set(15,cardSword);
+        deck.getAdventureDeck().set(16,cardSword);
+        deck.eventDeck.set(0,("Quest 2"));
     }
     @PostMapping("startQuest")
     public ResponseEntity<?> startQuest(@RequestBody Map<String, Object> request) {
         int sponsorPlayerIndex = (int) request.get("sponsorPlayerIndex");
         Player sponsorPlayer = playerList.get(sponsorPlayerIndex);
+        playerOne.gotShieldPrize = false;
+        playerTwo.gotShieldPrize = false;
+        playerThree.gotShieldPrize = false;
+        playerFour.gotShieldPrize = false;
         usedCardIndices.clear();
         stagesForQuest.clear();
         previousStageValue = 0;
@@ -476,6 +893,27 @@ public class Controller {
         playerFour.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
         return ResponseEntity.ok("Card Drawn");
     }
+    @PostMapping("riggedDrawAdventureCard")
+    public ResponseEntity<?> riggedDrawAdventureCard(@RequestBody Map<String, Object> request){
+        Card drawnCard = deck.drawRiggedCard();
+        if("playerOne".equals(request.get("player"))){
+            playerOne.hand.add(drawnCard);
+        }
+        if("playerTwo".equals(request.get("player"))){
+            playerTwo.hand.add(drawnCard);
+        }
+        if("playerThree".equals(request.get("player"))){
+            playerThree.hand.add(drawnCard);
+        }
+        if("playerFour".equals(request.get("player"))){
+            playerFour.hand.add(drawnCard);
+        }
+        playerOne.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
+        playerTwo.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
+        playerThree.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
+        playerFour.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
+        return ResponseEntity.ok("Card Drawn");
+    }
     @PostMapping("makeQuest")
     public ResponseEntity<?> makeQuest(@RequestBody Map<String, Object> request) {
         int sponsorPlayerIndex = (int) request.get("sponsorPlayerIndex");
@@ -553,6 +991,31 @@ public class Controller {
         }
         return ResponseEntity.ok("Used stage draw");
     }
+    @PostMapping("useRiggedStageDraw")
+    public ResponseEntity<?> useRiggedStageDraw(@RequestBody Map<String, Object> request) {
+        int numDraws = (int) request.get("number");
+        int sponsorPlayerIndex = (int) request.get("player");
+        for(int i= 0; i< numDraws;i++){
+            if(sponsorPlayerIndex % 4 == 0){
+                Card drawnCard = deck.drawRiggedCard();
+                playerOne.hand.add(drawnCard);
+                playerOne.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
+            }else if (sponsorPlayerIndex % 4== 1) {
+                Card drawnCard = deck.drawRiggedCard();
+                playerTwo.hand.add(drawnCard);
+                playerTwo.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
+            }else if (sponsorPlayerIndex % 4== 2) {
+                Card drawnCard = deck.drawRiggedCard();
+                playerThree.hand.add(drawnCard);
+                playerThree.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
+            }else if(sponsorPlayerIndex % 4== 3){
+                Card drawnCard = deck.drawRiggedCard();
+                playerFour.hand.add(drawnCard);
+                playerFour.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
+            }
+        }
+        return ResponseEntity.ok("Used stage draw");
+    }
     @PostMapping("useSponsorIndices")
     public ResponseEntity<?> useSponsorIndices(@RequestBody Map<String, Object> request) {
         int sponsorPlayerIndex = (int) request.get("player");
@@ -568,17 +1031,52 @@ public class Controller {
                 playerOne.hand.remove(index);
                 Card drawnCard = deck.drawCard();
                 playerOne.hand.add(drawnCard);
+                playerOne.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
             }else if (sponsorPlayerIndex % 4== 1) {
                 playerTwo.hand.remove(index);
                 Card drawnCard = deck.drawCard();
                 playerTwo.hand.add(drawnCard);
+                playerTwo.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
             }else if (sponsorPlayerIndex % 4== 2) {
                 playerThree.hand.remove(index);
                 Card drawnCard = deck.drawCard();
                 playerThree.hand.add(drawnCard);
+                playerThree.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
             }else if(sponsorPlayerIndex % 4== 3){
                 playerFour.hand.remove(index);
                 Card drawnCard = deck.drawCard();
+                playerFour.hand.add(drawnCard);
+                playerFour.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
+            }
+        }
+
+        return ResponseEntity.ok("Used sponsor indices");
+    }
+    @PostMapping("useRiggedSponsorIndices")
+    public ResponseEntity<?> useRiggedSponsorIndices(@RequestBody Map<String, Object> request) {
+        int sponsorPlayerIndex = (int) request.get("player");
+        List<?> rawIndices = (List<?>) request.get("indices");
+        List<Integer> indices = rawIndices.stream()
+                .map(index -> ((Number) index).intValue())
+                .toList();
+        for(int index : indices) {
+            System.out.println(index);
+            if(sponsorPlayerIndex % 4 == 0){
+                playerOne.hand.remove(index);
+                Card drawnCard = deck.drawRiggedCard();
+
+                playerOne.hand.add(drawnCard);
+            }else if (sponsorPlayerIndex % 4== 1) {
+                playerTwo.hand.remove(index);
+                Card drawnCard = deck.drawRiggedCard();
+                playerTwo.hand.add(drawnCard);
+            }else if (sponsorPlayerIndex % 4== 2) {
+                playerThree.hand.remove(index);
+                Card drawnCard = deck.drawRiggedCard();
+                playerThree.hand.add(drawnCard);
+            }else if(sponsorPlayerIndex % 4== 3){
+                playerFour.hand.remove(index);
+                Card drawnCard = deck.drawRiggedCard();
                 playerFour.hand.add(drawnCard);
             }
         }

@@ -7,6 +7,7 @@
  let firstAskedIndex = null;
  let winnerList = [];
  let otherPhase = "otherPhase";
+ let rigged = false;
 
 
 
@@ -66,6 +67,23 @@
          console.error("Error in startGame:", error);
      }
  }
+ async function startRigged1WinnerGame() {
+      rigged = true;
+      try {
+          const response = await fetch(`${apiBaseUrl}/startRiggedDeck1winner`);
+          if (!response.ok) {
+              throw new Error('Failed to start the game');
+          }
+          const result = await response.json();
+          console.log("API Response:", result);
+                   console.log("Player Hands:", result.playerOneHand, result.playerTwoHand, result.playerThreeHand, result.playerFourHand);
+                   updateGameDisplay(`Game Started! It is currently Player ${result.currentTurn}'s turn.`);
+                   updateTurnDisplay(result.currentTurn);
+                   updatePlayerHands(result);
+      } catch (error) {
+          console.error("Error in startGame:", error);
+      }
+  }
  function displayShields(result) {
      document.getElementById("player-one-name").innerText = `Player 1 (Shields: ${result.playerOneShields})`;
      document.getElementById("player-two-name").innerText = `Player 2 (Shields: ${result.playerTwoShields})`;
@@ -84,7 +102,12 @@
          lastCardDrawn = result.card;
          updateGameDisplay(`Drawn Card: ${result.card}`)
          if (result.card === "Prosperity") {
-            await handleProsperity();
+            if(rigged) {
+                await handleRiggedProsperity();
+            }
+            else {
+                await handleProsperity();
+            }
             await trimHands();
             currentPlayerIndex = (currentPlayerIndex + 1) % playerList.length;
             updateTurnDisplay(currentPlayerIndex + 1)
@@ -93,7 +116,11 @@
             if(currentPhase != "startedGame"){
                 currentPhase = "startedGame";
             }
-            await handleQueensFavor();
+            if(rigged) {
+                await handleRiggedQueensFavor();
+            } else {
+                await handleQueensFavor();
+            }
             await trimHands();
             currentPlayerIndex = (currentPlayerIndex + 1) % playerList.length;
             updateTurnDisplay(currentPlayerIndex + 1)
@@ -114,6 +141,47 @@
          updateGameDisplay("Error: Failed to draw card")
      }
  }
+ async function riggedDrawCard() {
+      try {
+          const response = await fetch(`${apiBaseUrl}/riggedDrawCard`, { method: "POST" });
+          if(!response.ok) {
+             throw new Error("Failed to draw card")
+          }
+          const result = await response.json();
+          console.log("Draw Card Response:", result);
+          lastCardDrawn = result.card;
+          updateGameDisplay(`Drawn Card: ${result.card}`)
+          if (result.card === "Prosperity") {
+             await handleRiggedProsperity();
+             await trimHands();
+             currentPlayerIndex = (currentPlayerIndex + 1) % playerList.length;
+             updateTurnDisplay(currentPlayerIndex + 1)
+
+          } else if (result.card === "Queen's favor") {
+             if(currentPhase != "startedGame"){
+                 currentPhase = "startedGame";
+             }
+             await handleRiggedQueensFavor();
+             await trimHands();
+             currentPlayerIndex = (currentPlayerIndex + 1) % playerList.length;
+             updateTurnDisplay(currentPlayerIndex + 1)
+
+          } else if (result.card === "Plague") {
+             await handlePlague();
+             currentPlayerIndex = (currentPlayerIndex + 1) % playerList.length;
+             updateTurnDisplay(currentPlayerIndex + 1)
+
+          } else {
+             currentPhase = "selectSponsor";
+             let card = result.card
+             await determineSponsor(card);
+          }
+
+      } catch (error) {
+          console.error("Error in drawCard:", error);
+          updateGameDisplay("Error: Failed to draw card")
+      }
+  }
 async function trimHands() {
     try{
                     const trim = await fetch(`${apiBaseUrl}/checkTrim`, {method: "POST"});
@@ -236,9 +304,35 @@ async function handleProsperity() {
         updateGameDisplay("Error: Failed to handle Prosperity event.");
     }
 }
+async function handleRiggedProsperity() {
+    try {
+        const response = await fetch(`${apiBaseUrl}/drawRiggedProsperity`, { method: "POST" });
+        const result = await response.json();
+        console.log("Prosperity Response:", result);
+        updatePlayerHands(result);
+        document.getElementById("event-message").innerText =
+            "Event: Prosperity! Each player has drawn 2 new cards.";
+
+    } catch (error) {
+        console.error("Error in handleProsperity:", error);
+        updateGameDisplay("Error: Failed to handle Prosperity event.");
+    }
+}
 async function handleQueensFavor() {
     try {
         const response = await fetch(`${apiBaseUrl}/drawQueensFavor`, {method: "POST" });
+        const result = await response.json();
+        console.log("Queen's favor Response:", result);
+        updatePlayerHands(result);
+        document.getElementById("event-message").innerText = "Event: Queen's Favor! The current player has drawn 2 new cards.";
+    } catch(error) {
+        console.error("Error in handleQueensFavour:", error);
+        updateGameDisplay("Error: Failed to handle Queen's Favor");
+    }
+}
+async function handleRiggedQueensFavor() {
+    try {
+        const response = await fetch(`${apiBaseUrl}/drawRiggedQueensFavor`, {method: "POST" });
         const result = await response.json();
         console.log("Queen's favor Response:", result);
         updatePlayerHands(result);
@@ -411,8 +505,17 @@ async function handleSponsorship(card, player) {
     }
     appendToGameDisplay(`The quest has finished and the sponsor player ${currentPlayerIndex + 1} is discarding cards and drawing cards`);
     let allIndices = selectedSponsorIndices.flat();
-    await fetch(`${apiBaseUrl}/useSponsorIndices`, {method: "POST", headers: {"Content-Type": "application/json"},body: JSON.stringify({indices:allIndices, player: currentPlayerIndex}),});
-    await fetch(`${apiBaseUrl}/useStageDraw`, {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({number: stageNumbers, player: currentPlayerIndex}),});
+    if(rigged) {
+        await fetch(`${apiBaseUrl}/useRiggedSponsorIndices`, {method: "POST", headers: {"Content-Type": "application/json"},body: JSON.stringify({indices:allIndices, player: currentPlayerIndex}),});
+        await fetch(`${apiBaseUrl}/useRiggedStageDraw`, {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({number: stageNumbers, player: currentPlayerIndex}),});
+    } else {
+        await fetch(`${apiBaseUrl}/useSponsorIndices`, {method: "POST", headers: {"Content-Type": "application/json"},body: JSON.stringify({indices:allIndices, player: currentPlayerIndex}),});
+        await fetch(`${apiBaseUrl}/useStageDraw`, {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({number: stageNumbers, player: currentPlayerIndex}),});
+
+    }
+    const updateHandResponseAfterQuest = await fetch(`${apiBaseUrl}/finishQuest`, { method: "POST" });
+    const handResultAfterQuest = await updateHandResponseAfterQuest.json();
+    await trimHands();
     const updateHandResponse = await fetch(`${apiBaseUrl}/finishQuest`, { method: "POST" });
     const handResult = await updateHandResponse.json();
     console.log("FinishQuest Response:", handResult);
@@ -465,7 +568,13 @@ async function handleQuestParticipation(quest) {
                     placeholder = "playerFour"
                 }
                 appendToGameDisplay(`Player ${startPlayerIndex + 1} has drawn a card`);
-                await fetch(`${apiBaseUrl}/drawAdventureCard`, {method:"POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({player:placeholder}),});
+                if(rigged){
+                    await fetch(`${apiBaseUrl}/riggedDrawAdventureCard`, {method:"POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({player:placeholder}),});
+
+                } else {
+                    await fetch(`${apiBaseUrl}/drawAdventureCard`, {method:"POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({player:placeholder}),});
+
+                }
                 const updateHandResponse = await fetch(`${apiBaseUrl}/finishQuest`, { method: "POST" });
                             const handResult = await updateHandResponse.json();
                             console.log("FinishQuest Response:", handResult);

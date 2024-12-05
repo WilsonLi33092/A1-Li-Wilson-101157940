@@ -207,4 +207,14 @@ public class Decks {
         return adventureDeck.get(randInx);
     }
     public ArrayList<Card> getAdventureDeck() {return adventureDeck;}
+    public Card drawRiggedCard() {
+        Card drawnCard = new Card();
+        drawnCard = adventureDeck.get(0);
+        adventureDeck.remove(0);
+        return drawnCard;
+    }
+    public String drawRiggedEventCard() {
+        Object drawnCard = eventDeck.get(0);
+        return drawnCard.toString();
+    }
 }

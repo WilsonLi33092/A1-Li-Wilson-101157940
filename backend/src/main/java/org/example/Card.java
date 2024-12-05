@@ -13,8 +13,11 @@ class Card {
     public int getSortValue() {
         return sortValue;
     }
+//    public String toString() {
+//        return type + " " + value + " " + sortValue;
+//    }
     public String toString() {
-        return type + " " + value + " " + sortValue;
+        return type + " " + value;
     }
     public void setType(String newType){
         type = newType;
