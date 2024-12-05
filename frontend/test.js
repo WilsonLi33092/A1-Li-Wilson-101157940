@@ -6,40 +6,291 @@ async function runRiggedDeck1Winner() {
 
     try {
         await driver.get('http://127.0.0.1:8081');
-
-        let startButton = await driver.findElement(By.xpath("//button[contains(text(), 'Start Game')]"));
+        await driver.sleep(1000);
+        let startButton = await driver.findElement(By.xpath("//button[contains(text(), 'RiggedDeck1W')]"));
         await startButton.click();
-
-        await driver.wait(until.elementTextContains(driver.findElement(By.id('game-status')), 'Game started'), 10000);
-        console.log("Game started successfully.");
-
-        let hitButton = await driver.findElement(By.xpath("//button[contains(text(), 'Hit')]"));
-        for (let i = 0; i < 3; i++) {
-            await hitButton.click();
-            await driver.sleep(1000);
-            let hitStatus = await driver.findElement(By.id('game-status')).getText();
-            console.log(`After Hit ${i + 1}:`, hitStatus);
-
-            if (hitStatus.includes("Bust")) {
-                console.log("Player busted!");
-                break;
-            }
-        }
-
-        let standButton = await driver.findElement(By.xpath("//button[contains(text(), 'Stand')]"));
-        await standButton.click();
-
-        await driver.wait(until.elementTextContains(driver.findElement(By.id('game-status')), 'Player'), 10000);
-
-        let finalStatus = await driver.findElement(By.id('game-status')).getText();
-        console.log("Final Game Status:", finalStatus);
-
-        if (finalStatus.includes("Player wins") || finalStatus.includes("Dealer wins") || finalStatus.includes("It's a tie")) {
-            console.log("Test passed: Final game result is displayed correctly.");
-        } else {
-            console.log("Test failed: Final game result is missing or incorrect.");
-        }
-
+        await driver.sleep(1000);
+        let drawButton = await driver.findElement(By.xpath("//button[contains(text(), 'RiggedDrawCard')]"));
+        await drawButton.click();
+        await driver.sleep(1000);
+        let inputField = await driver.findElement(By.xpath("//input[@placeholder='Enter command here...']"));
+        await inputField.sendKeys("yes");
+        await driver.sleep(1000);
+        let submitButton = await driver.findElement(By.xpath("//button[contains(text(), 'Submit')]"));
+        await submitButton.click();
+        await driver.sleep(1000);
+        await inputField.sendKeys("0");
+        await driver.sleep(1000);
+        await submitButton.click();
+        await driver.sleep(1000);
+        await inputField.sendKeys("2");
+        await driver.sleep(1000);
+        await submitButton.click();
+        await driver.sleep(1000);
+        await inputField.sendKeys("4");
+        await driver.sleep(1000);
+        await submitButton.click();
+        await driver.sleep(1000);
+        await inputField.sendKeys("6");
+        await driver.sleep(1000);
+        await submitButton.click();
+        await driver.sleep(1000);
+        await inputField.sendKeys("continue");
+        await driver.sleep(1000);
+        await submitButton.click();
+        await driver.sleep(1000);
+        await inputField.sendKeys("0");
+        await driver.sleep(1000);
+        await submitButton.click();
+        await driver.sleep(1000);
+        await inputField.sendKeys("2");
+        await driver.sleep(1000);
+        await submitButton.click();
+        await driver.sleep(1000);
+        await inputField.sendKeys("continue");
+        await driver.sleep(1000);
+        await submitButton.click();
+        await driver.sleep(1000);
+        await inputField.sendKeys("0");
+        await driver.sleep(1000);
+        await submitButton.click();
+        await driver.sleep(1000);
+        await inputField.sendKeys("2");
+        await driver.sleep(1000);
+        await submitButton.click();
+        await driver.sleep(1000);
+        await inputField.sendKeys("continue");
+        await driver.sleep(1000);
+        await submitButton.click();
+        await driver.sleep(1000);
+        await inputField.sendKeys("0");
+        await driver.sleep(1000);
+        await submitButton.click();
+        await driver.sleep(1000);
+        await inputField.sendKeys("3");
+        await driver.sleep(1000);
+        await submitButton.click();
+        await driver.sleep(1000);
+        await inputField.sendKeys("continue");
+        await driver.sleep(1000);
+        await submitButton.click();
+        await driver.sleep(1000);
+        await inputField.sendKeys("5");
+        await driver.sleep(1000);
+        await submitButton.click();
+        await driver.sleep(1000);
+        await inputField.sendKeys("continue");
+        await driver.sleep(1000);
+        await submitButton.click();
+        await driver.sleep(1000);
+        await inputField.sendKeys("5");
+        await driver.sleep(1000);
+        await submitButton.click();
+        await driver.sleep(1000);
+        await inputField.sendKeys("continue");
+        await driver.sleep(1000);
+        await submitButton.click();
+        await driver.sleep(1000);
+        await inputField.sendKeys("6");
+        await driver.sleep(1000);
+        await submitButton.click();
+        await driver.sleep(1000);
+        await inputField.sendKeys("continue");
+        await driver.sleep(1000);
+        await submitButton.click();
+        await driver.sleep(1000);
+        await inputField.sendKeys("7");
+        await driver.sleep(1000);
+        await submitButton.click();
+        await driver.sleep(1000);
+await inputField.sendKeys("continue");
+        await driver.sleep(1000);
+        await submitButton.click();
+        await driver.sleep(1000);
+        await inputField.sendKeys("7");
+        await driver.sleep(1000);
+        await submitButton.click();
+        await driver.sleep(1000);
+await inputField.sendKeys("continue");
+        await driver.sleep(1000);
+        await submitButton.click();
+        await driver.sleep(1000);
+        await inputField.sendKeys("8");
+        await driver.sleep(1000);
+        await submitButton.click();
+        await driver.sleep(1000);
+await inputField.sendKeys("continue");
+        await driver.sleep(1000);
+        await submitButton.click();
+        await driver.sleep(1000);
+        await inputField.sendKeys("9");
+        await driver.sleep(1000);
+        await submitButton.click();
+        await driver.sleep(1000);
+await inputField.sendKeys("continue");
+        await driver.sleep(1000);
+        await submitButton.click();
+        await driver.sleep(1000);
+        await inputField.sendKeys("9");
+        await driver.sleep(1000);
+        await submitButton.click();
+        await driver.sleep(1000);
+await inputField.sendKeys("continue");
+        await driver.sleep(1000);
+        await submitButton.click();
+        await driver.sleep(1000);
+        await inputField.sendKeys("10");
+        await driver.sleep(1000);
+        await submitButton.click();
+        await driver.sleep(1000);
+await inputField.sendKeys("0");
+        await driver.sleep(1000);
+        await submitButton.click();
+        await driver.sleep(1000);
+        await inputField.sendKeys("0");
+        await driver.sleep(1000);
+        await submitButton.click();
+        await driver.sleep(1000);
+        await inputField.sendKeys("1");
+        await driver.sleep(1000);
+        await submitButton.click();
+        await driver.sleep(1000);
+        await inputField.sendKeys("1");
+        await driver.sleep(1000);
+        await submitButton.click();
+        await driver.sleep(1000);
+        await drawButton.click();
+        await driver.sleep(1000);
+        await drawButton.click();
+        await driver.sleep(1000);
+        await inputField.sendKeys("0");
+        await driver.sleep(1000)
+        await submitButton.click();
+        await driver.sleep(1000);
+        await inputField.sendKeys("0");
+        await driver.sleep(1000)
+        await submitButton.click();
+        await driver.sleep(1000);
+        await inputField.sendKeys("0");
+        await driver.sleep(1000)
+        await submitButton.click();
+        await driver.sleep(1000);
+        await inputField.sendKeys("0");
+        await driver.sleep(1000)
+        await submitButton.click();
+        await driver.sleep(1000);
+        await inputField.sendKeys("0");
+        await driver.sleep(1000)
+        await submitButton.click();
+        await driver.sleep(1000);
+        await drawButton.click();
+        await driver.sleep(1000);
+        await inputField.sendKeys("1");
+        await driver.sleep(1000);
+        await submitButton.click()
+        await driver.sleep(1000);
+        await inputField.sendKeys("3");
+        await driver.sleep(1000);
+        await submitButton.click();
+        await driver.sleep(1000);
+        await drawButton.click();
+        await driver.sleep(1000);
+        await inputField.sendKeys("yes");
+        await driver.sleep(1000);
+        await submitButton.click();
+        await driver.sleep(1000);
+        await inputField.sendKeys("0");
+        await driver.sleep(1000);
+        await submitButton.click();
+        await driver.sleep(1000);
+        await inputField.sendKeys("1,9");
+        await driver.sleep(1000);
+        await submitButton.click();
+        await driver.sleep(1000);
+        await inputField.sendKeys("6,10");
+        await driver.sleep(1000);
+        await submitButton.click();
+        await driver.sleep(1000);
+        await inputField.sendKeys("continue");
+        await driver.sleep(1000);
+        await submitButton.click();
+        await driver.sleep(1000);
+        await inputField.sendKeys("0");
+        await driver.sleep(1000);
+        await submitButton.click();
+        await driver.sleep(1000);
+        await inputField.sendKeys("8");
+        await driver.sleep(1000);
+        await submitButton.click();
+        await driver.sleep(1000);
+        await inputField.sendKeys("continue");
+        await driver.sleep(1000);
+        await submitButton.click();
+        await driver.sleep(1000);
+        await inputField.sendKeys("0");
+        await driver.sleep(1000);
+        await submitButton.click();
+        await driver.sleep(1000);
+        await inputField.sendKeys("8");
+        await driver.sleep(1000);
+        await submitButton.click();
+        await driver.sleep(1000);
+        await inputField.sendKeys("continue");
+        await driver.sleep(1000);
+        await submitButton.click();
+        await driver.sleep(1000);
+        await inputField.sendKeys("0");
+        await driver.sleep(1000);
+        await submitButton.click();
+        await driver.sleep(1000);
+        await inputField.sendKeys("9");
+        await driver.sleep(1000);
+        await submitButton.click();
+        await driver.sleep(1000);
+        await inputField.sendKeys("continue");
+        await driver.sleep(1000);
+        await submitButton.click();
+        await driver.sleep(1000);
+        await inputField.sendKeys("9,7");
+        await driver.sleep(1000);
+        await submitButton.click()
+        await driver.sleep(1000);
+        await inputField.sendKeys("continue");
+        await driver.sleep(1000);
+        await submitButton.click();
+        await driver.sleep(1000);
+        await inputField.sendKeys("9,4");
+        await driver.sleep(1000);
+        await submitButton.click()
+        await driver.sleep(1000);
+        await inputField.sendKeys("continue");
+        await driver.sleep(1000);
+        await submitButton.click();
+        await driver.sleep(1000);
+        await inputField.sendKeys("9,4");
+        await driver.sleep(1000);
+        await submitButton.click()
+        await driver.sleep(1000);
+        await inputField.sendKeys("continue");
+        await driver.sleep(1000);
+        await submitButton.click();
+        await driver.sleep(1000);
+        await inputField.sendKeys("10");
+        await driver.sleep(1000);
+        await submitButton.click()
+        await driver.sleep(1000);
+        await inputField.sendKeys("0");
+        await driver.sleep(1000);
+        await submitButton.click();
+        await driver.sleep(1000);
+        await inputField.sendKeys("0");
+        await driver.sleep(1000);
+        await submitButton.click()
+        await driver.sleep(1000);
+        await inputField.sendKeys("0");
+        await driver.sleep(1000);
+        await submitButton.click();
+        await driver.sleep(10000);
     } catch (error) {
         console.error("Test encountered an error:", error);
     } finally {

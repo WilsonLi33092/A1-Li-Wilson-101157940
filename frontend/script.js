@@ -5,7 +5,7 @@
  let isSponsoring = false
  let lastCardDrawn = null;
  let firstAskedIndex = null;
- let winnerList = [];
+ window.winnerList = [];
  let otherPhase = "otherPhase";
  let rigged = false;
 
@@ -16,7 +16,6 @@
      const command = inputField.value.trim().toLowerCase();
     if(currentPhase === "selectSponsor"){
         if(command === "yes" || command === "no") {
-            console.log("Handling Sponsorship in processUserInput")
             await determineSponsorResponse(command);
         } else {
             return;
@@ -25,7 +24,6 @@
      //inputField.value = "";
  }
  async function determineSponsorResponse(response) {
-    console.log("In determineSponsor")
     const inputField = document.getElementById("user-input");
     inputField.value = "";
      if (response === "yes") {
@@ -58,8 +56,6 @@
              throw new Error('Failed to start the game');
          }
          const result = await response.json();
-         console.log("API Response:", result);
-                  console.log("Player Hands:", result.playerOneHand, result.playerTwoHand, result.playerThreeHand, result.playerFourHand);
                   updateGameDisplay(`Game Started! It is currently Player ${result.currentTurn}'s turn.`);
                   updateTurnDisplay(result.currentTurn);
                   updatePlayerHands(result);
@@ -75,8 +71,6 @@
               throw new Error('Failed to start the game');
           }
           const result = await response.json();
-          console.log("API Response:", result);
-                   console.log("Player Hands:", result.playerOneHand, result.playerTwoHand, result.playerThreeHand, result.playerFourHand);
                    updateGameDisplay(`Game Started! It is currently Player ${result.currentTurn}'s turn.`);
                    updateTurnDisplay(result.currentTurn);
                    updatePlayerHands(result);
