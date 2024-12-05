@@ -412,6 +412,7 @@ async function handleSponsorship(card, player) {
     appendToGameDisplay(`The quest has finished and the sponsor player ${currentPlayerIndex + 1} is discarding cards and drawing cards`);
     let allIndices = selectedSponsorIndices.flat();
     await fetch(`${apiBaseUrl}/useSponsorIndices`, {method: "POST", headers: {"Content-Type": "application/json"},body: JSON.stringify({indices:allIndices, player: currentPlayerIndex}),});
+    await fetch(`${apiBaseUrl}/useStageDraw`, {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({number: stageNumbers, player: currentPlayerIndex}),});
     const updateHandResponse = await fetch(`${apiBaseUrl}/finishQuest`, { method: "POST" });
     const handResult = await updateHandResponse.json();
     console.log("FinishQuest Response:", handResult);

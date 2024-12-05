@@ -206,4 +206,5 @@ public class Decks {
         int randInx = drawCard.nextInt(adventureDeck.size());
         return adventureDeck.get(randInx);
     }
+    public ArrayList<Card> getAdventureDeck() {return adventureDeck;}
 }
