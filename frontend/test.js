@@ -848,9 +848,9 @@ await inputField.sendKeys("continue");
 async function runAllTests() {
     let driver = await new Builder().forBrowser('chrome').build();
     try {
-        //await runRiggedDeck2Winner(driver);
-        //await runRiggedDeck1Winner(driver);
-        //await runRiggedDeck0Winner(driver);
+        await runRiggedDeck2Winner(driver);
+        await runRiggedDeck1Winner(driver);
+        await runRiggedDeck0Winner(driver);
         await runRiggedJPDeck(driver);
     } catch (error) {
         console.error("Error running tests:", error);
@@ -860,4 +860,3 @@ async function runAllTests() {
 }
 
 runAllTests();
-//runRiggedDeck2Winner();
