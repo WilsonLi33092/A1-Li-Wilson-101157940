@@ -39,6 +39,7 @@ public class Controller {
 
     @GetMapping("/start")
     public Map<String, Object> startGame() {
+        winners.clear();
         resetGame();
         playerOne.setNumPlayer(1);
         playerTwo.setNumPlayer(2);
@@ -81,6 +82,7 @@ public class Controller {
     }
     @GetMapping("/startRiggedDeck1winner")
     public Map<String, Object> startRiggedDeck1Winner() {
+        winners.clear();
         rigDeck1Winner();
         playerOne.setNumPlayer(1);
         playerTwo.setNumPlayer(2);
@@ -123,7 +125,94 @@ public class Controller {
     }
     @GetMapping("/startRiggedDeck0winner")
     public Map<String, Object> startRiggedDeck0Winner() {
+        winners.clear();
         rigDeck0Winner();
+        playerOne.setNumPlayer(1);
+        playerTwo.setNumPlayer(2);
+        playerThree.setNumPlayer(3);
+        playerFour.setNumPlayer(4);
+        int currentPlayerTurn = deck.getCurrentPlayerTurn();
+
+        String eventCard = deck.drawEventCard();
+        //playerOne.setHand(deck.player1Hand);
+        //playerTwo.setHand(deck.player2Hand);
+        //playerThree.setHand(deck.player3Hand);
+        //playerFour.setHand(deck.player4Hand);
+
+        playerOne.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
+        playerTwo.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
+        playerThree.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
+        playerFour.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
+        playerOne.shields = 0;
+        playerTwo.shields = 0;
+        playerThree.shields = 0;
+        playerFour.shields = 0;
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("currentTurn", currentPlayerTurn);
+        response.put("message", "Game started.");
+        response.put("playerOneHand", playerOne.getHand().stream().map(Card::toString).collect(Collectors.toList()));
+        response.put("playerOneShields", playerOne.getShields());
+        response.put("playerTwoHand", playerTwo.getHand().stream().map(Card::toString).collect(Collectors.toList()));
+        response.put("playerTwoShields", playerTwo.getShields());
+        response.put("playerThreeHand", playerThree.getHand().stream().map(Card::toString).collect(Collectors.toList()));
+        response.put("playerThreeShields", playerThree.getShields());
+        response.put("playerFourHand", playerFour.getHand().stream().map(Card::toString).collect(Collectors.toList()));
+        response.put("playerFourShields", playerFour.getShields());
+        System.out.println("Player One Hand: " + playerOne.getHand());
+        System.out.println("Player Two Hand: " + playerTwo.getHand());
+        System.out.println("Player Three Hand: " + playerThree.getHand());
+        System.out.println("Player Four Hand: " + playerFour.getHand());
+        System.out.println("Player one shields" + playerOne.getShields());
+        return response;
+    }
+    @GetMapping("/startRiggedDeck2winner")
+    public Map<String, Object> startRiggedDeck2Winner() {
+        winners.clear();
+        rigDeck2Winner();
+        playerOne.setNumPlayer(1);
+        playerTwo.setNumPlayer(2);
+        playerThree.setNumPlayer(3);
+        playerFour.setNumPlayer(4);
+        int currentPlayerTurn = deck.getCurrentPlayerTurn();
+
+        String eventCard = deck.drawEventCard();
+        //playerOne.setHand(deck.player1Hand);
+        //playerTwo.setHand(deck.player2Hand);
+        //playerThree.setHand(deck.player3Hand);
+        //playerFour.setHand(deck.player4Hand);
+
+        playerOne.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
+        playerTwo.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
+        playerThree.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
+        playerFour.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
+        playerOne.shields = 0;
+        playerTwo.shields = 0;
+        playerThree.shields = 0;
+        playerFour.shields = 0;
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("currentTurn", currentPlayerTurn);
+        response.put("message", "Game started.");
+        response.put("playerOneHand", playerOne.getHand().stream().map(Card::toString).collect(Collectors.toList()));
+        response.put("playerOneShields", playerOne.getShields());
+        response.put("playerTwoHand", playerTwo.getHand().stream().map(Card::toString).collect(Collectors.toList()));
+        response.put("playerTwoShields", playerTwo.getShields());
+        response.put("playerThreeHand", playerThree.getHand().stream().map(Card::toString).collect(Collectors.toList()));
+        response.put("playerThreeShields", playerThree.getShields());
+        response.put("playerFourHand", playerFour.getHand().stream().map(Card::toString).collect(Collectors.toList()));
+        response.put("playerFourShields", playerFour.getShields());
+        System.out.println("Player One Hand: " + playerOne.getHand());
+        System.out.println("Player Two Hand: " + playerTwo.getHand());
+        System.out.println("Player Three Hand: " + playerThree.getHand());
+        System.out.println("Player Four Hand: " + playerFour.getHand());
+        System.out.println("Player one shields" + playerOne.getShields());
+        return response;
+    }
+    @GetMapping("/startRiggedJPDeck")
+    public Map<String, Object> startRiggedJPDeck() {
+        winners.clear();
+        rigJPDeck();
         playerOne.setNumPlayer(1);
         playerTwo.setNumPlayer(2);
         playerThree.setNumPlayer(3);
@@ -832,6 +921,147 @@ public class Controller {
         deck.getAdventureDeck().set(16,cardSword);
         deck.eventDeck.set(0,("Quest 2"));
     }
+    private void rigJPDeck() {
+        deck = new Decks();
+        deck.intializeAdventureDeck();
+        deck.intializeEventDeck();
+        deck.intializeAdventureDeck();
+        deck.dealPlayersHands();
+        Card cardFoe5 = new Card();
+        cardFoe5.setType("Foe");
+        cardFoe5.setValue(5);
+        cardFoe5.setSortValue(1);
+        Card cardFoe10 = new Card();
+        cardFoe10.setValue(10);
+        cardFoe10.setType("Foe");
+        cardFoe10.setSortValue(2);
+        Card cardFoe15 = new Card();
+        cardFoe15.setValue(15);
+        cardFoe15.setType("Foe");
+        cardFoe15.setSortValue(3);
+        Card cardFoe20 = new Card();
+        cardFoe20.setValue(20);
+        cardFoe20.setType("Foe");
+        cardFoe20.setSortValue(4);
+        Card cardFoe25 = new Card();
+        cardFoe25.setValue(25);
+        cardFoe25.setType("Foe");
+        cardFoe25.setSortValue(5);
+        Card cardFoe30 = new Card();
+        cardFoe30.setValue(30);
+        cardFoe30.setType("Foe");
+        cardFoe30.setSortValue(6);
+        Card cardFoe35 = new Card();
+        cardFoe35.setType("Foe");
+        cardFoe35.value = 35;
+        cardFoe35.sortValue = 7;
+        Card cardFoe40 = new Card();
+        cardFoe40.setType("Foe");
+        cardFoe40.value = 40;
+        cardFoe40.sortValue = 8;
+        Card cardFoe50 = new Card();
+        cardFoe50.setType("Foe");
+        cardFoe50.value = 50;
+        cardFoe50.sortValue = 9;
+        Card cardFoe70 = new Card();
+        cardFoe70.setType("Foe");
+        cardFoe70.value = 70;
+        cardFoe70.sortValue = 10;
+        Card cardDagger = new Card();
+        cardDagger.type = "Dagger";
+        cardDagger.value = 5;
+        cardDagger.sortValue = 11;
+        Card cardSword = new Card();
+        cardSword.type = "Sword";
+        cardSword.value = 10;
+        cardSword.sortValue = 12;
+        Card cardHorse = new Card();
+        cardHorse.type = "Horse";
+        cardHorse.value = 10;
+        cardHorse.sortValue = 13;
+        Card cardBattleAxe = new Card();
+        cardBattleAxe.type = "Battle-Axe";
+        cardBattleAxe.value = 15;
+        cardBattleAxe.sortValue = 14;
+        Card cardLance = new Card();
+        cardLance.type = "Lance";
+        cardLance.value = 20;
+        cardLance.sortValue = 15;
+        Card cardEx = new Card();
+        cardEx.type = "Excalibur";
+        cardEx.value = 50;
+        cardEx.sortValue = 16;
+        ArrayList<Card> riggedPlayer1Hand = new ArrayList<>();
+        ArrayList<Card> riggedPlayer2Hand = new ArrayList<>();
+        ArrayList<Card> riggedPlayer3Hand = new ArrayList<>();
+        ArrayList<Card> riggedPlayer4Hand = new ArrayList<>();
+        riggedPlayer1Hand.add(cardFoe5);
+        riggedPlayer1Hand.add(cardFoe5);
+        riggedPlayer1Hand.add(cardFoe15);
+        riggedPlayer1Hand.add(cardFoe15);
+        riggedPlayer1Hand.add(cardDagger);
+        riggedPlayer1Hand.add(cardSword);
+        riggedPlayer1Hand.add(cardSword);
+        riggedPlayer1Hand.add(cardHorse);
+        riggedPlayer1Hand.add(cardHorse);
+        riggedPlayer1Hand.add(cardBattleAxe);
+        riggedPlayer1Hand.add(cardBattleAxe);
+        riggedPlayer1Hand.add(cardLance);
+        playerOne.setHand(riggedPlayer1Hand);
+        riggedPlayer2Hand.add(cardFoe5);
+        riggedPlayer2Hand.add(cardFoe5);
+        riggedPlayer2Hand.add(cardFoe15);
+        riggedPlayer2Hand.add(cardFoe15);
+        riggedPlayer2Hand.add(cardFoe40);
+        riggedPlayer2Hand.add(cardDagger);
+        riggedPlayer2Hand.add(cardSword);
+        riggedPlayer2Hand.add(cardHorse);
+        riggedPlayer2Hand.add(cardHorse);
+        riggedPlayer2Hand.add(cardBattleAxe);
+        riggedPlayer2Hand.add(cardBattleAxe);
+        riggedPlayer2Hand.add(cardEx);
+        playerTwo.setHand(riggedPlayer2Hand);
+        riggedPlayer3Hand.add(cardFoe5);
+        riggedPlayer3Hand.add(cardFoe5);
+        riggedPlayer3Hand.add(cardFoe5);
+        riggedPlayer3Hand.add(cardFoe15);
+        riggedPlayer3Hand.add(cardDagger);
+        riggedPlayer3Hand.add(cardSword);
+        riggedPlayer3Hand.add(cardSword);
+        riggedPlayer3Hand.add(cardSword);
+        riggedPlayer3Hand.add(cardHorse);
+        riggedPlayer3Hand.add(cardHorse);
+        riggedPlayer3Hand.add(cardBattleAxe);
+        riggedPlayer3Hand.add(cardLance);
+        playerThree.setHand(riggedPlayer3Hand);
+        riggedPlayer4Hand.add(cardFoe5);
+        riggedPlayer4Hand.add(cardFoe15);
+        riggedPlayer4Hand.add(cardFoe15);
+        riggedPlayer4Hand.add(cardFoe40);
+        riggedPlayer4Hand.add(cardDagger);
+        riggedPlayer4Hand.add(cardDagger);
+        riggedPlayer4Hand.add(cardSword);
+        riggedPlayer4Hand.add(cardHorse);
+        riggedPlayer4Hand.add(cardHorse);
+        riggedPlayer4Hand.add(cardBattleAxe);
+        riggedPlayer4Hand.add(cardLance);
+        riggedPlayer4Hand.add(cardEx);
+        playerFour.setHand(riggedPlayer4Hand);
+        deck.getAdventureDeck().set(0, cardFoe30);
+        deck.getAdventureDeck().set(1,cardSword);
+        deck.getAdventureDeck().set(2,cardBattleAxe);
+        deck.getAdventureDeck().set(3,cardFoe10);
+        deck.getAdventureDeck().set(4,cardLance);
+        deck.getAdventureDeck().set(5, cardLance);
+        deck.getAdventureDeck().set(6, cardBattleAxe);
+        deck.getAdventureDeck().set(7,cardSword);
+        deck.getAdventureDeck().set(8,cardFoe30);
+        deck.getAdventureDeck().set(9,cardLance);
+        deck.getAdventureDeck().set(10,cardFoe10);
+        deck.getAdventureDeck().set(11,cardFoe15);
+        deck.eventDeck.set(0,("Quest 4"));
+        deck.eventDeck.set(1, "Quest 3");
+    }
     @PostMapping("startQuest")
     public ResponseEntity<?> startQuest(@RequestBody Map<String, Object> request) {
         int sponsorPlayerIndex = (int) request.get("sponsorPlayerIndex");
@@ -853,21 +1083,25 @@ public class Controller {
         Map<String, Object> response = new HashMap<>();
         if(playerOne.shields >= 7) {
             response.put("playerOne", true);
+            winners.add(playerOne);
         } else {
             response.put("playerOne", false);
         }
         if(playerTwo.shields >= 7) {
             response.put("playerTwo", true);
+            winners.add(playerTwo);
         }else {
             response.put("playerTwo", false);
         }
         if(playerThree.shields >= 7) {
             response.put("playerThree", true);
+            winners.add(playerThree);
         } else {
             response.put("playerThree", false);
         }
         if(playerFour.shields >= 7) {
             response.put("playerFour", true);
+            winners.add(playerFour);
         } else {
             response.put("playerFour", false);
         }

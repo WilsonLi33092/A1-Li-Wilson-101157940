@@ -93,6 +93,36 @@
             console.error("Error in startGame:", error);
         }
     }
+  async function startRigged2WinnerGame() {
+        rigged = true;
+        try {
+            const response = await fetch(`${apiBaseUrl}/startRiggedDeck2winner`);
+            if (!response.ok) {
+                throw new Error('Failed to start the game');
+            }
+            const result = await response.json();
+                     updateGameDisplay(`Game Started! It is currently Player ${result.currentTurn}'s turn.`);
+                     updateTurnDisplay(result.currentTurn);
+                     updatePlayerHands(result);
+        } catch (error) {
+            console.error("Error in startGame:", error);
+        }
+    }
+    async function startRiggedJPDeck() {
+          rigged = true;
+          try {
+              const response = await fetch(`${apiBaseUrl}/startRiggedJPDeck`);
+              if (!response.ok) {
+                  throw new Error('Failed to start the game');
+              }
+              const result = await response.json();
+                       updateGameDisplay(`Game Started! It is currently Player ${result.currentTurn}'s turn.`);
+                       updateTurnDisplay(result.currentTurn);
+                       updatePlayerHands(result);
+          } catch (error) {
+              console.error("Error in startGame:", error);
+          }
+      }
  function displayShields(result) {
      document.getElementById("player-one-name").innerText = `Player 1 (Shields: ${result.playerOneShields})`;
      document.getElementById("player-two-name").innerText = `Player 2 (Shields: ${result.playerTwoShields})`;
@@ -257,6 +287,11 @@ function updateGameDisplay(message) {
     gameDisplay.value = message;
     gameDisplay.scrollTop = gameDisplay.scrollHeight;
 }
+function updateWinnerDisplay(message) {
+    const winnerDisplay = document.getElementById("winners");
+    winnerDisplay.value = message;
+    winnerDisplay.scrollTop = winnerDisplay.scrollHeight;
+}
 
 function updateTurnDisplay(currentTurn) {
     const turnDisplay = document.getElementById("current-turn");
@@ -337,6 +372,11 @@ function appendToGameDisplay(message) {
     const gameDisplay = document.getElementById("game-display");
     gameDisplay.value += message + "\n";
     gameDisplay.scrollTop = gameDisplay.scrollHeight;
+}
+function appendToWinnerDisplay(message) {
+    const winnerDisplay = document.getElementById("winners");
+    winnerDisplay.value += message;
+    winnerDisplay.scrollTop = winnerDisplay.scrollHeight;
 }
 async function determineSponsor(card) {
     let sponsorFound = false;
@@ -452,20 +492,29 @@ async function handleSponsorship(card, player) {
     const checkWinnersJson = await checkForWinners.json();
     if(checkWinnersJson.playerOne || checkWinnersJson.playerTwo || checkWinnersJson.playerThree || checkWinnersJson.playerFour) {
         if(checkWinnersJson.playerOne){
-            winnerList.push(1);
-        }
-        if(checkWinnersJson.playerTwo){
-            winnerList.push(2);
-        }
-        if(checkWinnersJson.playerThree){
-            winnerList.push(3);
-        }
-        if(checkWinnersJson.playerFour){
-            winnerList.push(4)
-        }
-        for(let i =0; i<winnerList.length;i++) {
-            appendToGameDisplay(`\n Player ${winnerList[i]} has won the game. Congratulations.`);
-        }
+                                        if(!winnerList.includes(1)){
+                                          winnerList.push(1);
+                                        }
+                                    }
+                                    if(checkWinnersJson.playerTwo){
+                                        if(!winnerList.includes(2)){
+                                                                          winnerList.push(2);
+                                                                        }
+                                    }
+                                    if(checkWinnersJson.playerThree){
+                                        if(!winnerList.includes(3)){
+                                                                          winnerList.push(3);
+                                                                        }
+                                    }
+                                    if(checkWinnersJson.playerFour){
+                                        if(!winnerList.includes(4)){
+                                                                          winnerList.push(4);
+                                                                        }
+                                    }
+                                    for(let i =0; i<winnerList.length;i++) {
+                                        appendToGameDisplay(`\n Player ${winnerList[i]} has won the game. Congratulations.`);
+                                        appendToWinnerDisplay(`Player ${winnerList[i]} `)
+                                    }
     }
     appendToGameDisplay(`The quest has finished and the sponsor player ${currentPlayerIndex + 1} is discarding cards and drawing cards`);
     let allIndices = selectedSponsorIndices.flat();
