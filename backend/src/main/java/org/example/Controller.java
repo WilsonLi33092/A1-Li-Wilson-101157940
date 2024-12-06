@@ -57,10 +57,10 @@ public class Controller {
         playerTwo.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
         playerThree.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
         playerFour.getHand().sort(Comparator.comparingInt(card -> card.sortValue));
-        playerOne.shields = 6;
-        playerTwo.shields = 6;
-        playerThree.shields = 6;
-        playerFour.shields = 6;
+        playerOne.shields = 0;
+        playerTwo.shields = 0;
+        playerThree.shields = 0;
+        playerFour.shields = 0;
 
         Map<String, Object> response = new HashMap<>();
         response.put("currentTurn", currentPlayerTurn);
